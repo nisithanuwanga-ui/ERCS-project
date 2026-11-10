@@ -13,13 +13,19 @@ export async function migrate() {
       .filter((x) => x.endsWith(".sql"))
       .sort()) {
       const sql = await readFile(`${dir}/${name}`, "utf8");
-      const checksum = createHash("sha256").update(sql).digest("hex");
+      const normalized = sql.replace(/\r\n/g, "\n");
+      const checksum = createHash("sha256").update(normalized).digest("hex");
+      const rawChecksum = createHash("sha256").update(sql).digest("hex");
       const previous = (
         await db.query("SELECT checksum FROM schema_migrations WHERE name=$1", [
           name,
         ])
       ).rows[0];
-      if (previous && previous.checksum !== checksum)
+      if (
+        previous &&
+        previous.checksum !== checksum &&
+        previous.checksum !== rawChecksum
+      )
         throw new Error(`Migration checksum mismatch: ${name}`);
       if (!previous) {
         await db.query(sql);
