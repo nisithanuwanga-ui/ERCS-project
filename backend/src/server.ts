@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { pool } from "./db.js";
+import { incidentsRouter } from "./routes/incidents.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use("/api/incidents", incidentsRouter);
 
 app.get("/api/health", (_req, res) => {
   res.status(200).json({
@@ -32,7 +34,7 @@ app.get("/api/db-health", async (_req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Neon PostgreSQL connection successful",
+      message: "PostgreSQL connection successful",
       database: result.rows[0].database_name,
       databaseTime: result.rows[0].database_time,
     });
