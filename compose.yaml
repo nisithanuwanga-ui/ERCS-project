@@ -1,0 +1,39 @@
+services:
+  database:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ercs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD locally}
+      POSTGRES_DB: ercs
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ercs -d ercs"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build: {context: ., dockerfile: deploy/backend.Dockerfile}
+    environment: &api_environment
+      NODE_ENV: development
+      DATABASE_URL: postgresql://ercs:${POSTGRES_PASSWORD}@database:5432/ercs
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET}
+      APP_ORIGIN: http://localhost:8080
+      TRUST_PROXY: "1"
+    depends_on:
+      database: {condition: service_healthy}
+    command: ["node", "--input-type=module", "-e", "import('./backend/dist/backend/src/migrate.js').then(async m=>{await m.migrate();const d=await import('./backend/dist/backend/src/database.js');await d.pool.end()})"]
+  api:
+    build: {context: ., dockerfile: deploy/backend.Dockerfile}
+    environment: *api_environment
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    restart: unless-stopped
+  frontend:
+    build: {context: ., dockerfile: deploy/frontend.Dockerfile}
+    ports: ["127.0.0.1:8080:80"]
+    depends_on:
+      api: {condition: service_healthy}
+    restart: unless-stopped
+volumes:
+  postgres_data:

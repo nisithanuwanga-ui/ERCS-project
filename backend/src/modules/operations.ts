@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { router as module0 } from "./administration.js";
+import { router as module1 } from "./incidents.js";
+import { router as module2 } from "./resources.js";
+import { router as module3 } from "./requests.js";
+import { router as module4 } from "./allocation-routes.js";
+import { router as module5 } from "./teams.js";
+import { router as module6 } from "./records.js";
+export const operations = Router();
+operations.use(module0, module1, module2, module3, module4, module5, module6);

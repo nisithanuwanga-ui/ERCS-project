@@ -11,6 +11,18 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+coverage/
+backend/dist/
+playwright-report/
+test-results/
+.local-db/
+.test-db/
+.test-db-*/
+.tmp/
+tmp/
 
 # Editor directories and files
 .vscode/*

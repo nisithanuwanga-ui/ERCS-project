@@ -1,0 +1,746 @@
+.access-page {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1.04fr;
+  background: #f8fafc;
+  padding: 14px;
+  gap: 14px;
+}
+.access-form-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 23px 32px;
+  min-width: 0;
+}
+.access-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.access-header .brand {
+  font-size: 23px;
+}
+.access-header .brand small {
+  font-size: 8px;
+}
+.access-header .brand-mark {
+  width: 39px;
+  height: 39px;
+  border-radius: 11px;
+}
+.access-header .back-link {
+  align-self: auto;
+  font-size: 10px;
+  gap: 7px;
+}
+.access-form-card {
+  width: 100%;
+  max-width: 365px;
+  margin: 45px auto;
+}
+.access-form-card > .icon-circle {
+  width: 45px;
+  height: 45px;
+  margin-bottom: 24px;
+}
+.access-form-card > .eyebrow {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: #8393aa;
+}
+.access-form-card h1 {
+  font-size: 35px;
+  letter-spacing: -0.05em;
+  margin-top: 14px;
+  font-weight: 750;
+}
+.access-form-card > p {
+  font-size: 12px;
+  color: #7a8ba1;
+  line-height: 1.85;
+  margin: 13px 0 28px;
+}
+.access-form-card .form-stack {
+  gap: 20px;
+}
+.access-form-card label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #41536c;
+  gap: 9px;
+}
+.access-form-card input {
+  font-size: 12px;
+  min-height: 46px;
+  border-color: #d9e3ed;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 2px 2px #1e293b02;
+}
+.access-form-card .password-wrap input {
+  padding-right: 43px;
+}
+.access-form-card .password-wrap button {
+  top: 10px;
+  right: 8px;
+}
+.access-form-card .button.full {
+  margin-top: 3px;
+  padding: 14px;
+  font-size: 12px;
+}
+.access-form-card .checkbox {
+  font-size: 10px;
+  color: #778aa1;
+  font-weight: 400;
+}
+.access-form-card .checkbox input {
+  width: 13px;
+  min-height: 13px;
+  margin: 0;
+}
+.access-form-card .auth-switch {
+  font-size: 10px;
+  text-align: center;
+  color: #8495aa;
+  margin: 23px 0;
+}
+.access-form-card .auth-switch a {
+  color: #2563eb;
+  font-weight: 600;
+}
+.access-form-card .security-note {
+  font-size: 9px;
+  line-height: 1.8;
+  padding: 15px;
+  background: #f0f4f8;
+  border-color: #e4ebf2;
+  border-radius: 8px;
+}
+.access-form-card .security-note svg {
+  width: 16px;
+}
+.access-form-card .form-stack > small {
+  font-size: 9px;
+  line-height: 1.8;
+  color: #7e8fa6;
+  margin-top: -7px;
+}
+.access-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 8px;
+  color: #93a2b6;
+}
+.access-form-footer small {
+  font-size: 8px;
+}
+.access-form-footer > span {
+  color: #0f766e;
+  border: 1px solid #d6e8e1;
+  background: #eaf4ef;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 7px;
+  white-space: nowrap;
+}
+.access-visual {
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 750px;
+  isolation: isolate;
+}
+.network-visual {
+  background:
+    radial-gradient(ellipse at 50% 30%, #e0edf4, transparent 60%),
+    linear-gradient(130deg, #edf2f9, #e2edf0);
+}
+.access-visual-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 30px 31px;
+  z-index: 1;
+}
+.access-visual-index {
+  font-size: 7px;
+  letter-spacing: 0.13em;
+  color: #8298ad;
+  font-weight: 600;
+}
+.visual-security-label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 8px;
+  color: #587d89;
+  border: 1px solid #bcd5dd80;
+  border-radius: 30px;
+  padding: 6px 9px;
+  background: #ffffff40;
+}
+.network-artwork {
+  position: relative;
+  min-height: 370px;
+  flex: 1;
+  max-height: 490px;
+  margin-top: -20px;
+}
+.network-map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: contain;
+}
+.secure-connections {
+  animation: secure-flow 20s linear infinite;
+}
+.network-core {
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.network-core > span {
+  width: 93px;
+  height: 93px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff, #f6fbff);
+  color: #2563eb;
+  border: 1px solid #fff;
+  box-shadow:
+    0 12px 30px #225f8618,
+    inset 0 0 0 6px #f2f7fc;
+  position: relative;
+  z-index: 2;
+}
+.network-core > small {
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  color: #66829e;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.core-rings {
+  width: 134px;
+  height: 134px;
+  border: 1px solid #94bbc65c;
+  border-radius: 36px;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  translate: -50% 0;
+  transform: rotate(9deg);
+}
+.core-rings:after {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  border: 1px solid #94bbc626;
+  border-radius: 45px;
+  transform: rotate(-18deg);
+}
+.network-tag {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #fffffff0;
+  box-shadow: 0 9px 25px #285a7909;
+  border: 1px solid #fff;
+  border-radius: 9px;
+  padding: 12px 14px;
+}
+.network-tag > span {
+  width: 6px;
+  height: 6px;
+  background: #58a89c;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #58a89c0c;
+}
+.network-tag small {
+  font-size: 6px;
+  letter-spacing: 0.08em;
+  color: #94a4b7;
+  font-weight: 600;
+  display: block;
+}
+.network-tag strong {
+  display: block;
+  font-size: 9px;
+  color: #526b83;
+  margin-top: 5px;
+}
+.network-tag > svg {
+  color: #0f766e;
+}
+.tag-incidents {
+  top: 19%;
+  left: 9%;
+  animation: access-float 8s ease-in-out infinite;
+}
+.tag-resources {
+  top: 30%;
+  right: 5%;
+  animation: access-float 8s ease-in-out -4s infinite;
+}
+.network-security-card {
+  position: absolute;
+  left: 20%;
+  bottom: 8%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: #ffffffef;
+  border: 1px solid white;
+  border-radius: 11px;
+  box-shadow: 0 12px 25px #234b6d09;
+}
+.network-security-card > span {
+  width: 34px;
+  height: 34px;
+  background: #eaf3fa;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: #4284ad;
+}
+.network-security-card strong {
+  font-size: 10px;
+  color: #47617a;
+  display: block;
+}
+.network-security-card small {
+  font-size: 8px;
+  display: block;
+  color: #8ba0b5;
+  margin-top: 5px;
+}
+.network-security-card > svg {
+  margin-left: 13px;
+  color: #79a59d;
+}
+.access-visual-copy {
+  padding: 30px 48px 35px;
+  z-index: 1;
+}
+.access-visual-copy > .eyebrow {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+.access-visual-copy h2 {
+  font-size: 36px;
+  line-height: 1.28;
+  letter-spacing: -0.045em;
+  margin: 15px 0 16px;
+  color: #25485f;
+  font-weight: 650;
+}
+.access-visual-copy > p {
+  max-width: 380px;
+  font-size: 12px;
+  line-height: 1.85;
+  color: #7690a2;
+}
+.access-visual-foot {
+  display: flex;
+  gap: 25px;
+  border-top: 1px solid #b5ccd952;
+  margin-top: 27px;
+  padding-top: 20px;
+}
+.access-visual-foot > span {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 8px;
+  color: #7893a4;
+}
+.activation-page .access-form-card {
+  margin: 28px auto;
+}
+.activation-page .access-form-card .form-stack {
+  gap: 16px;
+}
+.activation-page .access-form-card h1 {
+  font-size: 31px;
+}
+.activation-page .access-form-card > .icon-circle {
+  margin-bottom: 19px;
+}
+.invitation-visual {
+  background:
+    radial-gradient(ellipse at 50% 35%, #e1f0e7, transparent 65%),
+    linear-gradient(145deg, #edf4ef, #e8efeb);
+}
+.invitation-visual .access-visual-index {
+  color: #819a8b;
+}
+.invitation-visual .visual-security-label {
+  color: #5f8975;
+  border-color: #bbd3c5;
+}
+.invitation-artwork {
+  position: relative;
+  min-height: 370px;
+  flex: 1;
+  max-height: 450px;
+  margin-top: -5px;
+}
+.invitation-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.invite-connection {
+  animation: secure-flow 25s linear infinite;
+}
+.invitation-envelope {
+  position: absolute;
+  width: 235px;
+  height: 220px;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%) rotate(-4deg);
+}
+.invitation-sheet {
+  position: absolute;
+  inset: 0 15px 0;
+  background: #fff;
+  border: 1px solid #dce9e1;
+  border-radius: 10px;
+  padding: 25px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 40px #436b5714;
+}
+.envelope-seal {
+  color: #0f766e;
+  background: #edf6f0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 15px;
+  margin-bottom: 17px;
+}
+.invitation-sheet > small {
+  font-size: 6px;
+  color: #91a99b;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+}
+.invitation-sheet > strong {
+  font-family: Manrope, sans-serif;
+  font-size: 14px;
+  color: #3e6654;
+  margin-top: 10px;
+}
+.letter-line {
+  height: 3px;
+  width: 100px;
+  background: #edf3ef;
+  margin-top: 14px;
+  border-radius: 3px;
+}
+.short-line {
+  width: 65px;
+  margin-top: 7px;
+}
+.invitation-stamp {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 6px;
+  color: #709881;
+  margin-top: 14px;
+}
+.envelope-front {
+  position: absolute;
+  bottom: -40px;
+  left: -18px;
+  right: -18px;
+  height: 95px;
+  background: linear-gradient(150deg, #d3e8da, #c8e0d2);
+  border: 1px solid #bad8c7;
+  border-radius: 4px 4px 12px 12px;
+  box-shadow: 0 15px 25px #3a6a4f12;
+  clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
+}
+.envelope-check {
+  position: absolute;
+  bottom: -20px;
+  right: -28px;
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background: #0f766e;
+  border: 6px solid #e9f1eb;
+  color: #fff;
+  z-index: 2;
+  box-shadow: 0 7px 20px #0f766e15;
+}
+.invite-person {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: #ffffffec;
+  border: 1px solid white;
+  border-radius: 9px;
+  box-shadow: 0 9px 30px #41674f0c;
+  z-index: 3;
+}
+.invite-person > span {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: #ecf5ef;
+  color: #5e9980;
+  border-radius: 9px;
+}
+.invite-person small {
+  font-size: 6px;
+  color: #93ab9c;
+  letter-spacing: 0.04em;
+  display: block;
+  font-weight: 600;
+}
+.invite-person strong {
+  font-size: 9px;
+  display: block;
+  color: #537663;
+  margin-top: 6px;
+}
+.invite-person > svg {
+  color: #7ca68f;
+  margin-left: 6px;
+}
+.person-one {
+  left: 6%;
+  top: 10%;
+  transform: rotate(-3deg);
+  animation: access-float 9s ease-in-out infinite;
+}
+.person-two {
+  right: 4%;
+  bottom: 3%;
+  transform: rotate(3deg);
+  animation: access-float 9s ease-in-out -5s infinite;
+}
+.invitation-visual .access-visual-copy h2 {
+  color: #315f4b;
+}
+.invitation-visual .access-visual-copy > p {
+  color: #7c9686;
+}
+.invitation-visual .access-visual-foot {
+  border-color: #c0d5c64f;
+}
+.invitation-visual .access-visual-foot > span {
+  color: #7b9786;
+}
+@keyframes secure-flow {
+  to {
+    stroke-dashoffset: -150;
+  }
+}
+@keyframes access-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+@media (min-width: 1550px) {
+  .access-page {
+    max-width: 1800px;
+    margin: auto;
+  }
+  .access-form-panel {
+    padding: 30px 50px;
+  }
+  .access-form-card {
+    max-width: 400px;
+  }
+  .access-visual {
+    min-height: 850px;
+  }
+  .network-artwork {
+    max-height: 580px;
+  }
+  .access-visual-copy {
+    padding-inline: 65px;
+    padding-bottom: 45px;
+  }
+}
+@media (max-width: 1050px) {
+  .access-page {
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    gap: 10px;
+  }
+  .access-form-panel {
+    padding: 20px;
+  }
+  .access-header .back-link {
+    font-size: 0;
+    gap: 0;
+  }
+  .access-header .back-link svg {
+    font-size: 12px;
+  }
+  .access-visual-top {
+    padding: 27px 21px;
+  }
+  .access-visual-index {
+    font-size: 6px;
+  }
+  .visual-security-label {
+    font-size: 7px;
+  }
+  .access-form-card {
+    max-width: 330px;
+  }
+  .network-tag {
+    padding: 10px;
+  }
+  .tag-incidents {
+    left: 3%;
+    top: 15%;
+  }
+  .tag-resources {
+    right: 2%;
+    top: 32%;
+  }
+  .network-security-card {
+    left: 8%;
+    padding: 13px;
+  }
+  .network-security-card > svg {
+    display: none;
+  }
+  .access-visual-copy {
+    padding: 25px 30px 30px;
+  }
+  .access-visual-copy h2 {
+    font-size: 30px;
+  }
+  .access-visual-copy p {
+    font-size: 11px;
+  }
+  .access-visual-foot {
+    gap: 13px;
+    flex-wrap: wrap;
+  }
+  .access-visual-foot > span {
+    font-size: 7px;
+  }
+  .invite-person {
+    padding: 10px;
+  }
+  .person-one {
+    left: 3%;
+  }
+  .person-two {
+    right: 2%;
+  }
+  .invitation-envelope {
+    width: 205px;
+    height: 210px;
+  }
+}
+@media (max-width: 740px) {
+  .access-page {
+    display: block;
+    padding: 0;
+    background: #f5f8fb;
+  }
+  .access-visual {
+    display: none;
+  }
+  .access-form-panel {
+    padding: 25px 24px;
+    min-height: 100dvh;
+  }
+  .access-header .back-link {
+    font-size: 9px;
+    gap: 5px;
+  }
+  .access-header .brand {
+    font-size: 21px;
+  }
+  .access-header .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+  .access-header .brand small {
+    font-size: 7px;
+  }
+  .access-form-card {
+    max-width: 390px;
+    margin: 55px auto;
+  }
+  .access-form-card > .icon-circle {
+    width: 43px;
+    height: 43px;
+  }
+  .access-form-card h1 {
+    font-size: 33px;
+  }
+  .access-form-card > p {
+    font-size: 12px;
+  }
+  .access-form-card input {
+    min-height: 47px;
+  }
+  .access-form-card .button.full {
+    min-height: 47px;
+  }
+  .access-form-footer {
+    font-size: 7px;
+    align-items: start;
+  }
+  .access-form-footer small {
+    font-size: 7px;
+    line-height: 1.7;
+    max-width: 170px;
+  }
+  .activation-page .access-form-card {
+    margin: 40px auto;
+  }
+  .activation-page .access-form-card h1 {
+    font-size: 29px;
+  }
+  .access-form-card .checkbox {
+    font-size: 10px;
+  }
+  .access-form-card .auth-switch {
+    font-size: 10px;
+  }
+}
