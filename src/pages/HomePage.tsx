@@ -1,28 +1,15 @@
 import {
-  Activity,
   ArrowRight,
   ArrowUpRight,
   Boxes,
   Check,
   CheckCircle2,
-  Clock,
   Compass,
-  FileText,
-  Flame,
-  Globe2,
-  Layers,
-  LifeBuoy,
-  Lock,
   MapPin,
   Radio,
   Server,
-  ShieldAlert,
   ShieldCheck,
-  Truck,
-  UserCheck,
   Users,
-  Workflow,
-  Zap,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Brand } from "../components/ui";

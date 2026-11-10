@@ -5,12 +5,10 @@ import {
   CheckCheck,
   ClipboardCheck,
   FileSearch,
-  PackageCheck,
   Radio,
   RotateCcw,
   ShieldCheck,
   Truck,
-  Users,
 } from "lucide-react";
 
 const steps = [

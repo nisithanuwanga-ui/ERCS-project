@@ -140,7 +140,7 @@ const cards = [
 const actions: {
   title: string;
   path: string;
-  permission: Permission;
+  permission?: Permission;
   icon: typeof Activity;
 }[] = [
   {
@@ -152,7 +152,6 @@ const actions: {
   {
     title: "View incidents",
     path: "/incidents",
-    permission: "incidents.read",
     icon: Activity,
   },
   {
@@ -164,7 +163,6 @@ const actions: {
   {
     title: "All requests",
     path: "/resource-requests",
-    permission: "requests.read",
     icon: ClipboardList,
   },
   {
@@ -188,7 +186,6 @@ const actions: {
   {
     title: "Monitor shortages",
     path: "/shortages",
-    permission: "resources.read",
     icon: ShieldAlert,
   },
 ];
@@ -388,7 +385,7 @@ export function Dashboard() {
   };
   const period = `${days} days`;
   const visibleActions = user
-    ? actions.filter((a) => can(user.role, a.permission))
+    ? actions.filter((a) => !a.permission || can(user.role, a.permission))
     : [];
 
   const filteredUrgentRequests =

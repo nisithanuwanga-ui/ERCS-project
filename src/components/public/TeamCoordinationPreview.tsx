@@ -2,9 +2,7 @@ import { useState } from "react";
 import {
   ArrowRight,
   CheckCircle2,
-  Compass,
   MapPin,
-  PhoneCall,
   Radio,
   Shield,
   UserCheck,
