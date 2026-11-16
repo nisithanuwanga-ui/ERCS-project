@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../app/useAuth';
 import { Mail, LockKeyhole, Eye, EyeOff, ArrowRight, Loader2, Check } from 'lucide-react';
 
 export const LoginForm: React.FC = () => {
+  const { signIn, serviceError } = useAuth();
+  const navigate = useNavigate();
+  const [requestError, setRequestError] = useState('');
+  const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,20 +33,17 @@ export const LoginForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      setLoading(true);
-      
-      // Simulate API call
-      setTimeout(() => {
-        setLoading(false);
-        setSuccess(true);
-        
-        // Reset success state after a while for demo purposes
-        setTimeout(() => setSuccess(false), 3000);
-      }, 1000);
-    }
+    if (loading || !validate()) return;
+    setRequestError('');
+    setLoading(true);
+    try {
+      await signIn(email, password, remember);
+      setSuccess(true);
+      navigate('/dashboard');
+    } catch (error) { setRequestError((error as Error).message); }
+    finally { setLoading(false); }
   };
 
   return (
@@ -51,6 +54,7 @@ export const LoginForm: React.FC = () => {
         <p className="login-subtitle">Sign in to access the Emergency Resource Coordination System.</p>
       </div>
 
+      {(requestError || serviceError) && <div className="error-message" role="alert">{requestError || serviceError}</div>}
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="email" className="input-label">Email address</label>
@@ -105,13 +109,13 @@ export const LoginForm: React.FC = () => {
 
         <div className="form-options">
           <label className="checkbox-label">
-            <input type="checkbox" disabled={loading || success} />
+            <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} disabled={loading || success} />
             <div className="custom-checkbox">
               <Check className="checkbox-icon" strokeWidth={3} />
             </div>
             Remember me
           </label>
-          <a href="#" className="forgot-link">Forgot password?</a>
+          <a href="/support" className="forgot-link">Forgot password?</a>
         </div>
 
         <button 
