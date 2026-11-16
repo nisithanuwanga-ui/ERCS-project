@@ -63,7 +63,15 @@ export const modules: Record<string, ModuleConfig> = {
     createPermission: "incidents.create",
     editPermission: "incidents.manage",
     columns: ["code", "title", "priority", "status", "location", "created_at"],
-    statuses: ["open", "reported", "active", "controlled", "resolved", "closed"],
+    statuses: [
+      "open",
+      "reported",
+      "active",
+      "controlled",
+      "resolved",
+      "closed",
+      "completed",
+    ],
     fields: [
       { key: "title", label: "Incident title", required: true },
       categories("incident_category"),
@@ -149,6 +157,7 @@ export const modules: Record<string, ModuleConfig> = {
       "Connect operational needs with a clear, accountable decision.",
     path: "/resource-requests",
     createPermission: "requests.create",
+    editPermission: "requests.create",
     columns: [
       "code",
       "incident",

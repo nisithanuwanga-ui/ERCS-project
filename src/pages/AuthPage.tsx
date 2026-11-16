@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import {
   ArrowLeft,
   ArrowRight,
   Eye,
   EyeOff,
+  LoaderCircle,
   LockKeyhole,
   ShieldCheck,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Brand, Message } from "../components/ui";
 import { useAuth } from "../app/useAuth";
-import { api } from "../services/api";
+import { api, ApiError } from "../services/api";
 import {
   SecureNetworkVisual,
   InvitationVisual,
@@ -24,8 +25,22 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [retryUntil, setRetryUntil] = useState(0);
+  const [now, setNow] = useState(Date.now);
+  const retrySeconds = Math.max(0, Math.ceil((retryUntil - now) / 1000));
+  const retryTime = `${Math.floor(retrySeconds / 60)}:${String(retrySeconds % 60).padStart(2, "0")}`;
+  useEffect(() => {
+    if (!retryUntil) return;
+    const timer = window.setInterval(() => {
+      const current = Date.now();
+      setNow(current);
+      if (current >= retryUntil) setRetryUntil(0);
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [retryUntil]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending || retrySeconds > 0) return;
     setError("");
     const form = new FormData(event.currentTarget);
     const password = String(form.get("password"));
@@ -53,7 +68,11 @@ export function AuthPage({ register = false }: { register?: boolean }) {
         navigate("/dashboard");
       }
     } catch (e) {
-      setError((e as Error).message);
+      if (e instanceof ApiError && e.status === 429) {
+        const current = Date.now();
+        setNow(current);
+        setRetryUntil(current + (e.retryAfterSeconds ?? 60) * 1000);
+      } else setError((e as Error).message);
     } finally {
       setPending(false);
     }
@@ -85,6 +104,17 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               : "Sign in to access the Emergency Resource Coordination System."}
           </p>
           {error && <Message>{error}</Message>}
+          {retrySeconds > 0 && (
+            <>
+              <Message>
+                Too many unsuccessful attempts. Please wait before trying again.
+                Your form details are still here.
+              </Message>
+              <p id="auth-retry-status" aria-live="off">
+                You can try again in <strong>{retryTime}</strong>.
+              </p>
+            </>
+          )}
           {success ? (
             <>
               <Message success>
@@ -150,6 +180,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                     type="button"
                     onClick={() => setShow(!show)}
                     aria-label={show ? "Hide password" : "Show password"}
+                    aria-pressed={show}
                   >
                     {show ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -180,13 +211,29 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                   </label>
                 </div>
               )}
-              <button className="button full" disabled={pending}>
+              <button
+                className="button full"
+                disabled={pending || retrySeconds > 0}
+                aria-describedby={
+                  retrySeconds > 0 ? "auth-retry-status" : undefined
+                }
+              >
                 {pending
                   ? "Please wait…"
-                  : register
-                    ? "Activate account"
-                    : "Sign in securely"}
-                <ArrowRight size={17} />
+                  : retrySeconds > 0
+                    ? `Try again in ${retryTime}`
+                    : register
+                      ? "Activate account"
+                      : "Sign in securely"}
+                {pending ? (
+                  <LoaderCircle
+                    size={20}
+                    className="access-spinner"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <ArrowRight size={20} />
+                )}
               </button>
             </form>
           )}

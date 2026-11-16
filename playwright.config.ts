@@ -8,6 +8,8 @@ export default defineConfig({
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:5175",
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },

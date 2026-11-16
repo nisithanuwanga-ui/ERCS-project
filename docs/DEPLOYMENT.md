@@ -17,7 +17,9 @@ npm run db:provision-dev
 npm run dev:full
 ```
 
-Open **http://127.0.0.1:5173/**. Use this exact origin; cookie mutation checks compare it with `APP_ORIGIN`. The API listens on 3001; Vite proxies `/api` to it. Development administrator credentials are written once to ignored `.local-db/administrator.txt`. The provisioning helper refuses hosted/nondevelopment databases. It inserts no operational demo records. Keep the database process running while using the application.
+Open **http://127.0.0.1:5173/** or **http://localhost:5173/**. In `NODE_ENV=development`, a loopback `APP_ORIGIN` trusts both names on its configured port. The API listens on 3001; Vite proxies relative `/api` requests while preserving the browser's Origin. Vite uses port 5173 with `strictPort` so a busy port cannot silently move the UI outside the allowlist. Development administrator credentials are written once to ignored `.local-db/administrator.txt`. The provisioning helper refuses hosted/nondevelopment databases. It inserts no operational demo records. Keep the database process running while using the application.
+
+`APP_ORIGIN` must be an exact HTTP(S) origin (scheme, hostname, and port; no trailing slash, path, credentials, query, or fragment). Optional `TRUSTED_ORIGINS` adds comma-separated exact origins; wildcards are rejected. Test and production modes add no automatic aliases. Production should use the intended HTTPS origin and only explicitly approved additional origins. No CORS wildcard or browser-origin rewriting is used. CSRF tokens remain bound to their session cookies; switching hostname creates a separate browser session, so sign in on the hostname you intend to use. See [origin fix verification](AUTH-ORIGIN-FIX.md).
 
 The administrator can invite a coordinator and resource manager from User management. Activation requires the invited email and one-time token; roles are assigned by the administrator. Invitation links are returned once and must be shared privately with the intended recipient. No email delivery service or public account signup is implied. The administrator does not have operational approval powers.
 

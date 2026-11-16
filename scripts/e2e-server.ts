@@ -27,6 +27,9 @@ process.env.NODE_ENV = "test";
 process.env.DATABASE_URL = `postgresql://ercs_e2e:${password}@127.0.0.1:${databasePort}/postgres`;
 process.env.SESSION_SECRET = randomBytes(40).toString("hex");
 process.env.APP_ORIGIN = "http://127.0.0.1:5175";
+// Both browser hostnames exercise the same-origin Vite proxy. Test mode does
+// not automatically expand development loopback aliases.
+process.env.TRUSTED_ORIGINS = "http://localhost:5175";
 process.env.API_TARGET = "http://127.0.0.1:3005";
 let databaseStarted = false;
 let pool: Pool | undefined;

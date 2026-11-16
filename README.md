@@ -18,6 +18,7 @@ Open **http://127.0.0.1:5173/**. Development administrator credentials are store
 - [Permissions and lifecycle rules](docs/PERMISSIONS.md)
 - [Database relationships and transaction design](docs/DATA-MODEL.md)
 - [Repository audit and phase plan](docs/IMPLEMENTATION-PLAN.md)
+- [Management workspaces and API additions](docs/WORKSPACE-UPGRADE.md)
 - [Generated asset and prompt](docs/ASSETS.md)
 
 Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:integration`, `npm run test:e2e`, `npm run build`, and `npm run build:api`. Browser tests require `npx playwright install chromium`. Integration/browser fixtures use disposable databases only. See the verification log for actual results and outstanding deployment checks.

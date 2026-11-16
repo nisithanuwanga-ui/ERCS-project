@@ -127,6 +127,15 @@ export async function allocate(user: User, input: unknown, key: string) {
         allocation.id,
         { quantity: v.quantity },
       );
+      await history(
+        db,
+        user.id,
+        "allocations",
+        allocation.id,
+        null,
+        "active",
+        `${v.quantity} units allocated for ${request.code}.`,
+      );
       return allocation;
     }),
   );
@@ -185,6 +194,16 @@ export async function release(
         quantity: v.quantity,
         reason: v.reason,
       });
+      await history(
+        db,
+        user.id,
+        "allocations",
+        id,
+        "active",
+        result.quantity === result.released_quantity ? "returned" : "active",
+        `${v.quantity} units returned. ${v.reason}`,
+        "resources_released",
+      );
       return result;
     }),
   );

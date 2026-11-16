@@ -8,7 +8,9 @@ Incident `status=open` groups reported, active and controlled records. Request `
 
 ## Authentication and CSRF
 
-`GET /auth/csrf` starts a session and returns `data.token`. Every mutation, including login and activation, must send `X-CSRF-Token` and the exact configured `Origin`, with the session cookie. Fetch a new token after login because the session ID and token rotate. Cookies are HttpOnly, SameSite=Lax and Secure in production. Remembered sessions expire after 7 days of inactivity; default sessions after 8 hours. Session version checks revoke access after password, role or activation changes. Frontend stores no authentication token in localStorage.
+Login, activation, and password change each have an independent IP-based budget of 15 unsuccessful requests per 15 minutes. Successful responses do not consume this failed-attempt quota. The general API request limit still applies to all traffic. Authentication cooldown responses return HTTP 429 with `Retry-After` and `error: { code: "AUTH_RATE_LIMITED", message, retryAfterSeconds }`. The login form displays the remaining wait, preserves entered values, and allows manual retry after expiry; it never automatically resubmits credentials.
+
+`GET /auth/csrf` starts a session and returns `data.token`. Every mutation, including login and activation, must send `X-CSRF-Token` and an exact allowlisted `Origin`, with the session cookie. `APP_ORIGIN` is always trusted; optional `TRUSTED_ORIGINS` adds explicit comma-separated origins. Development adds only the localhost/127.0.0.1 counterpart on the primary loopback origin's port; test/production add no aliases automatically. Missing, null, malformed, wrong-port, or untrusted origins return 403 even with a valid token. Fetch a new token after login because the session ID and token rotate. Cookies are host-only, HttpOnly, SameSite=Lax and Secure in production. Remembered sessions expire after 7 days of inactivity; default sessions after 8 hours. Session version checks revoke access after password, role or activation changes. Frontend stores no authentication token in localStorage.
 
 | Method | Path | Input / behavior |
 |---|---|---|

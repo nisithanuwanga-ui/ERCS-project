@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
 import argon2 from "argon2";
-import { rateLimit } from "express-rate-limit";
+import { createAuthRateLimiter } from "../auth-rate-limit.js";
 import { z } from "zod";
 import { audit, pool, transaction } from "../database.js";
 import { authenticate, HttpError, publicUser, userOf } from "../security.js";
@@ -12,18 +12,14 @@ export const authRouter = Router();
 export function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 15,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  message: { error: { message: "Too many attempts. Please try again later." } },
-});
+const loginLimiter = createAuthRateLimiter("login");
+const activationLimiter = createAuthRateLimiter("activation");
+const passwordChangeLimiter = createAuthRateLimiter("password change");
 authRouter.get("/csrf", (req, res) => {
   req.session.csrf ??= randomBytes(32).toString("hex");
   res.json({ data: { token: req.session.csrf } });
 });
-authRouter.post("/login", limiter, async (req, res) => {
+authRouter.post("/login", loginLimiter, async (req, res) => {
   const v = z
     .object({
       email: z.email().transform((x) => x.toLowerCase()),
@@ -83,7 +79,7 @@ authRouter.post("/logout", authenticate, async (req, res) => {
   res.clearCookie("ercs.sid", { path: "/" });
   res.json({ data: { ok: true } });
 });
-authRouter.post("/activate", limiter, async (req, res) => {
+authRouter.post("/activate", activationLimiter, async (req, res) => {
   const v = z
     .object({
       token: z.string().min(32).max(200),
@@ -123,34 +119,39 @@ authRouter.post("/activate", limiter, async (req, res) => {
   });
   res.status(201).json({ data: { ok: true } });
 });
-authRouter.post("/change-password", authenticate, limiter, async (req, res) => {
-  const v = z
-    .object({
-      current_password: z.string().min(1).max(128),
-      password: passwordSchema,
-    })
-    .strict()
-    .parse(req.body);
-  const user = userOf(req);
-  const current = (
-    await pool.query("SELECT password_hash FROM users WHERE id=$1", [user.id])
-  ).rows[0];
-  if (!(await argon2.verify(current.password_hash, v.current_password)))
-    throw new HttpError(400, "Current password is incorrect.");
-  const hash = await argon2.hash(v.password);
-  await transaction(async (db) => {
-    await db.query(
-      "UPDATE users SET password_hash=$1,session_version=session_version+1,updated_at=now() WHERE id=$2",
-      [hash, user.id],
+authRouter.post(
+  "/change-password",
+  authenticate,
+  passwordChangeLimiter,
+  async (req, res) => {
+    const v = z
+      .object({
+        current_password: z.string().min(1).max(128),
+        password: passwordSchema,
+      })
+      .strict()
+      .parse(req.body);
+    const user = userOf(req);
+    const current = (
+      await pool.query("SELECT password_hash FROM users WHERE id=$1", [user.id])
+    ).rows[0];
+    if (!(await argon2.verify(current.password_hash, v.current_password)))
+      throw new HttpError(400, "Current password is incorrect.");
+    const hash = await argon2.hash(v.password);
+    await transaction(async (db) => {
+      await db.query(
+        "UPDATE users SET password_hash=$1,session_version=session_version+1,updated_at=now() WHERE id=$2",
+        [hash, user.id],
+      );
+      await audit(db, user.id, "auth.password_changed", "users", user.id);
+    });
+    await new Promise<void>((resolve, reject) =>
+      req.session.destroy((e) => (e ? reject(e) : resolve())),
     );
-    await audit(db, user.id, "auth.password_changed", "users", user.id);
-  });
-  await new Promise<void>((resolve, reject) =>
-    req.session.destroy((e) => (e ? reject(e) : resolve())),
-  );
-  res.clearCookie("ercs.sid", { path: "/" });
-  res.json({ data: { ok: true } });
-});
+    res.clearCookie("ercs.sid", { path: "/" });
+    res.json({ data: { ok: true } });
+  },
+);
 export function equalToken(a: string, b: string) {
   const x = Buffer.from(a);
   const y = Buffer.from(b);

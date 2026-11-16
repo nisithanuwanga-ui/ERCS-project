@@ -123,3 +123,89 @@ router.patch("/resource-requests/:id/status", async (req, res) => {
   });
   res.json({ data: row });
 });
+router.patch(
+  "/resource-requests/:id",
+  permit("requests.create"),
+  async (req, res) => {
+    const id = idSchema.parse(req.params.id);
+    const v = requestSchema.parse(req.body);
+    const user = userOf(req);
+    const row = await transaction(async (db) => {
+      const link = (
+        await db.query(
+          "SELECT incident_id FROM resource_requests WHERE id=$1",
+          [id],
+        )
+      ).rows[0];
+      if (!link) throw new HttpError(404, "Request not found.");
+      await requireIncident(db, link.incident_id, user, true);
+      const incident =
+        v.incident_id === link.incident_id
+          ? (
+              await db.query("SELECT status FROM incidents WHERE id=$1", [
+                link.incident_id,
+              ])
+            ).rows[0]
+          : await requireIncident(db, v.incident_id, user, true);
+      const previous = (
+        await db.query(
+          "SELECT * FROM resource_requests WHERE id=$1 FOR UPDATE",
+          [id],
+        )
+      ).rows[0];
+      if (
+        previous.requester_id !== user.id &&
+        !can(user.role, "requests.review")
+      )
+        throw new HttpError(
+          403,
+          "Only the requester or a request reviewer can edit this request.",
+        );
+      if (previous.status !== "pending")
+        throw new HttpError(
+          409,
+          "Only pending requests can be edited. Reviewed requests retain their approved details.",
+        );
+      if (["resolved", "closed"].includes(incident.status))
+        throw new HttpError(409, "This incident no longer accepts requests.");
+      if (
+        v.resource_id &&
+        !(
+          await db.query("SELECT id FROM resources WHERE id=$1", [
+            v.resource_id,
+          ])
+        ).rowCount
+      )
+        throw new HttpError(400, "Resource not found.");
+      if (v.category_id)
+        await activeReference(db, v.category_id, "resource_category");
+      const item = (
+        await db.query(
+          "UPDATE resource_requests SET incident_id=$1,resource_id=$2,category_id=$3,quantity=$4,priority=$5,justification=$6,updated_at=now() WHERE id=$7 RETURNING *",
+          [
+            v.incident_id,
+            v.resource_id ?? null,
+            v.category_id ?? null,
+            v.quantity,
+            v.priority,
+            v.justification,
+            id,
+          ],
+        )
+      ).rows[0];
+      await history(
+        db,
+        user.id,
+        "resource-requests",
+        id,
+        null,
+        null,
+        "Pending request details updated.",
+        "record_updated",
+      );
+      await audit(db, user.id, "request.updated", "resource-requests", id, v);
+      return item;
+    });
+    res.json({ data: row });
+  },
+);

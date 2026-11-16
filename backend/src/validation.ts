@@ -71,6 +71,17 @@ export const releaseSchema = z
     reason: z.string().trim().min(3).max(1000),
   })
   .strict();
+export const stockAdjustmentSchema = z
+  .object({
+    quantity_delta: z
+      .number()
+      .int()
+      .min(-100000000)
+      .max(100000000)
+      .refine((v) => v !== 0, "Enter a nonzero quantity adjustment."),
+    reason: z.string().trim().min(3).max(1000),
+  })
+  .strict();
 export const teamSchema = z
   .object({
     name: text,

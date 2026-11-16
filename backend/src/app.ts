@@ -7,6 +7,7 @@ import { rateLimit } from "express-rate-limit";
 import { randomUUID } from "node:crypto";
 import { ZodError } from "zod";
 import { config } from "./config.js";
+import { isTrustedOrigin } from "./origins.js";
 import { pool } from "./database.js";
 import { authenticate, HttpError } from "./security.js";
 import { authRouter, equalToken } from "./modules/auth.js";
@@ -48,6 +49,13 @@ export function createApp() {
       limit: 300,
       standardHeaders: "draft-8",
       legacyHeaders: false,
+      message: {
+        error: {
+          code: "RATE_LIMITED",
+          message:
+            "Too many requests. Please wait a minute, then refresh and try again.",
+        },
+      },
     }),
   );
   const Store = pgSession(session);
@@ -70,7 +78,7 @@ export function createApp() {
   app.use("/api", (req, res, next) => {
     res.setHeader("Cache-Control", "no-store");
     if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) {
-      if (req.get("Origin") !== config.APP_ORIGIN)
+      if (!isTrustedOrigin(req.get("Origin"), config.ALLOWED_ORIGINS))
         return next(
           new HttpError(403, "This request origin is not allowed.", "CSRF"),
         );
@@ -133,11 +141,9 @@ export function createApp() {
           path: req.path,
         }),
       );
-    res
-      .status(status)
-      .json({
-        error: { code, message, requestId: res.getHeader("X-Request-Id") },
-      });
+    res.status(status).json({
+      error: { code, message, requestId: res.getHeader("X-Request-Id") },
+    });
   };
   app.use(errors);
   return app;

@@ -53,9 +53,10 @@ export async function history(
   from: string | null,
   to: string | null,
   note = "",
+  action = from ? "status_changed" : to ? "created" : "note_added",
 ) {
   await db.query(
     "INSERT INTO history(actor_id,entity_type,entity_id,action,previous_status,next_status,note) VALUES($1,$2,$3,$4,$5,$6,$7)",
-    [actor, entity, id, from ? "status_changed" : "created", from, to, note],
+    [actor, entity, id, action, from, to, note],
   );
 }

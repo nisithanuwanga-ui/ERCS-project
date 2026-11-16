@@ -10,6 +10,7 @@ import {
   passwordSchema,
   requestSchema,
   resourceSchema,
+  stockAdjustmentSchema,
 } from "../src/validation";
 describe("permission boundaries", () => {
   it("never grants administrators implicit operational decisions", () => {
@@ -86,5 +87,24 @@ describe("lifecycle and validation", () => {
         threshold: 0,
       }).success,
     ).toBe(false);
+  });
+  it("requires an explained nonzero integral stock movement", () => {
+    for (const quantity_delta of [0, 1.5, -100000001, 100000001])
+      expect(
+        stockAdjustmentSchema.safeParse({
+          quantity_delta,
+          reason: "Warehouse count",
+        }).success,
+      ).toBe(false);
+    expect(
+      stockAdjustmentSchema.safeParse({ quantity_delta: 5, reason: "" })
+        .success,
+    ).toBe(false);
+    expect(
+      stockAdjustmentSchema.safeParse({
+        quantity_delta: -5,
+        reason: "Warehouse count",
+      }).success,
+    ).toBe(true);
   });
 });

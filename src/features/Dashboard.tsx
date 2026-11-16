@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import {
   Activity,
@@ -100,7 +100,7 @@ const cards = [
     key: "available_resources",
     title: "Available resource units",
     icon: Boxes,
-    path: "/resources?status=operational",
+    path: "/resources?availability=available",
     cardClass: "kpi-card-resources",
     note: "Operational and ready to allocate",
   },
@@ -200,7 +200,12 @@ const shortDate = (date: string) =>
     month: "short",
     day: "numeric",
   });
-const ticks = { fontSize: 10, fill: "#64748b" };
+const ticks = { fontSize: 12, fill: "#52647b" };
+function periodStart(days: string) {
+  const date = new Date();
+  date.setDate(date.getDate() - Number(days) + 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
 
 function ChartPanel({
   id,
@@ -212,6 +217,8 @@ function ChartPanel({
   children,
   empty,
   period,
+  path,
+  linkLabel,
 }: {
   id: string;
   title: string;
@@ -222,6 +229,8 @@ function ChartPanel({
   children: ReactNode;
   empty?: boolean;
   period: string;
+  path: string;
+  linkLabel: string;
 }) {
   return (
     <section
@@ -248,6 +257,9 @@ function ChartPanel({
           <p className="chart-readable-summary">{summary}</p>
         </>
       )}
+      <Link className="chart-drilldown" to={path}>
+        {linkLabel} <ArrowUpRight size={16} />
+      </Link>
       <details className="chart-data">
         <summary>
           View accessible data table <span aria-hidden="true">↗</span>
@@ -344,6 +356,12 @@ export function Dashboard() {
   const result = useApi<{ data: SummaryData }>(
     `/dashboard/summary?days=${days}`,
   );
+  const { refresh } = result;
+  useEffect(() => {
+    const handleFocus = () => refresh();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [refresh]);
   if (result.loading)
     return (
       <div className="operations-dashboard">
@@ -455,24 +473,28 @@ export function Dashboard() {
         </div>
       </section>
       <div className="kpi-grid">
-        {cards.map(({ key, title, icon: Icon, path, cardClass, note }, index) => (
-          <Link
-            className={`kpi-card ${cardClass}`}
-            to={path}
-            key={key}
-            style={{ animationDelay: `${index * 35}ms` }}
-          >
-            <div className="kpi-card-top">
-              <span className="kpi-icon-wrapper">
-                <Icon size={22} />
-              </span>
-              <ArrowUpRight size={18} className="kpi-card-arrow" />
-            </div>
-            <strong className="kpi-metric-val">{d.counts[key]?.toLocaleString() ?? 0}</strong>
-            <span className="kpi-card-label">{title}</span>
-            <small className="kpi-card-note">{note}</small>
-          </Link>
-        ))}
+        {cards.map(
+          ({ key, title, icon: Icon, path, cardClass, note }, index) => (
+            <Link
+              className={`kpi-card ${cardClass}`}
+              to={path}
+              key={key}
+              style={{ animationDelay: `${index * 35}ms` }}
+            >
+              <div className="kpi-card-top">
+                <span className="kpi-icon-wrapper">
+                  <Icon size={22} />
+                </span>
+                <ArrowUpRight size={18} className="kpi-card-arrow" />
+              </div>
+              <strong className="kpi-metric-val">
+                {d.counts[key]?.toLocaleString() ?? 0}
+              </strong>
+              <span className="kpi-card-label">{title}</span>
+              <small className="kpi-card-note">{note}</small>
+            </Link>
+          ),
+        )}
       </div>
       <div className="dashboard-controls-bar">
         {visibleActions.length > 0 && (
@@ -492,7 +514,7 @@ export function Dashboard() {
         )}
         <div className="dashboard-filter-group">
           <label htmlFor="dashboard-priority-filter" className="actions-label">
-            Filter Severity:
+            Recent records by priority
           </label>
           <select
             id="dashboard-priority-filter"
@@ -500,7 +522,7 @@ export function Dashboard() {
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
           >
-            <option value="all">All Severities</option>
+            <option value="all">All priorities</option>
             <option value="critical">Critical</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
@@ -511,6 +533,8 @@ export function Dashboard() {
       <div className="dashboard-charts">
         <ChartPanel
           id="incident-trends"
+          path={`/incidents?from=${periodStart(days)}`}
+          linkLabel="Explore incident reports"
           title="Incident trends"
           description="New incident reports, day by day"
           period={period}
@@ -543,7 +567,7 @@ export function Dashboard() {
                 tick={ticks}
               />
               <Tooltip labelFormatter={(x) => shortDate(String(x))} />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 13 }} />
               <Line
                 dataKey="incidents"
                 name="Incidents reported"
@@ -559,6 +583,8 @@ export function Dashboard() {
         </ChartPanel>
         <ChartPanel
           id="resource-availability"
+          path="/resources"
+          linkLabel="Open inventory workspace"
           title="Resource availability"
           description="Inventory units by current operational state"
           period="Current snapshot"
@@ -600,7 +626,7 @@ export function Dashboard() {
                   ))}
               </Pie>
               <Tooltip />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 13 }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartPanel>
@@ -608,6 +634,8 @@ export function Dashboard() {
       <div className="dashboard-charts">
         <ChartPanel
           id="requests-priority"
+          path="/resource-requests?status=awaiting_review"
+          linkLabel="Open pending request queue"
           title="Requests by priority"
           description="All requests submitted during the reporting period"
           period={period}
@@ -638,7 +666,7 @@ export function Dashboard() {
                 tickLine={false}
               />
               <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 13 }} />
               <Bar
                 dataKey="value"
                 name="Requests submitted"
@@ -667,6 +695,8 @@ export function Dashboard() {
       <div className="dashboard-charts">
         <ChartPanel
           id="allocation-activity"
+          path="/allocations"
+          linkLabel="Track allocations and releases"
           title="Allocation activity"
           description="Resource units issued during the reporting period"
           period={period}
@@ -715,7 +745,7 @@ export function Dashboard() {
                 tick={ticks}
               />
               <Tooltip labelFormatter={(x) => shortDate(String(x))} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 13 }} />
               <Area
                 dataKey="quantity"
                 name="Units allocated"
@@ -730,6 +760,8 @@ export function Dashboard() {
         </ChartPanel>
         <ChartPanel
           id="team-availability"
+          path="/teams?availability=available"
+          linkLabel="Find an available response team"
           title="Team availability"
           description="Team readiness by response capability"
           period="Current snapshot"
@@ -762,7 +794,7 @@ export function Dashboard() {
                 tickLine={false}
               />
               <Tooltip />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 13 }} />
               <Bar
                 dataKey="available"
                 name="Available"
@@ -795,6 +827,8 @@ export function Dashboard() {
       <div className="dashboard-charts">
         <ChartPanel
           id="resource-shortages"
+          path="/shortages"
+          linkLabel="Inspect stock and demand alerts"
           title="Resource shortages"
           description="Available supply against approved, unissued demand"
           period="Current snapshot"
@@ -828,7 +862,7 @@ export function Dashboard() {
                 tickLine={false}
               />
               <Tooltip />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 13 }} />
               <Bar
                 dataKey="available"
                 name="Available supply"

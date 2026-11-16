@@ -14,6 +14,23 @@ router.get("/reference-data", async (_req, res) =>
       .rows,
   }),
 );
+// Operational filters need display names without exposing account contact or role data.
+router.get("/directory/people", async (req, res) => {
+  const v = z
+    .object({
+      q: z.string().trim().max(160).default(""),
+      limit: z.coerce.number().int().min(1).max(100).default(100),
+    })
+    .parse(req.query);
+  res.json({
+    data: (
+      await pool.query(
+        "SELECT id,name FROM users WHERE active AND name ILIKE $1 ORDER BY name,id LIMIT $2",
+        [`%${v.q}%`, v.limit],
+      )
+    ).rows,
+  });
+});
 router.get("/people", async (req, res) => {
   const user = userOf(req);
   if (!can(user.role, "teams.manage") && !can(user.role, "users.manage"))

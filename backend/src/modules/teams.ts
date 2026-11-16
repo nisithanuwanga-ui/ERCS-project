@@ -2,7 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { can } from "../../../shared/domain.js";
 import type { User } from "../../../shared/domain.js";
-import { audit, pool, transaction } from "../database.js";
+import { audit, history, pool, transaction } from "../database.js";
 import { HttpError, permit, requireIncident, userOf } from "../security.js";
 import { idSchema, teamSchema } from "../validation.js";
 import { activeReference } from "./references.js";
@@ -12,10 +12,15 @@ async function saveTeam(input: unknown, user: User, id?: string) {
   const v = teamSchema.parse(input);
   await activeReference(pool, v.type_id, "team_type");
   return transaction(async (db) => {
+    let previous: { status: string } | undefined;
     if (id) {
-      await db.query("SELECT id FROM response_teams WHERE id=$1 FOR UPDATE", [
-        id,
-      ]);
+      previous = (
+        await db.query(
+          "SELECT status FROM response_teams WHERE id=$1 FOR UPDATE",
+          [id],
+        )
+      ).rows[0];
+      if (!previous) throw new HttpError(404, "Team not found.");
       if (
         v.status === "unavailable" &&
         (
@@ -61,6 +66,16 @@ async function saveTeam(input: unknown, user: User, id?: string) {
       id ? "team.updated" : "team.created",
       "teams",
       item.id,
+    );
+    await history(
+      db,
+      user.id,
+      "teams",
+      item.id,
+      previous?.status ?? null,
+      item.status,
+      id ? "Team details and membership updated." : "Team created.",
+      id && previous?.status === item.status ? "record_updated" : undefined,
     );
     return item;
   });
@@ -112,6 +127,26 @@ router.post(
         "team_assignments",
         item.id,
         { incident_id: id },
+      );
+      await history(
+        db,
+        userOf(req).id,
+        "teams",
+        v.team_id,
+        "available",
+        "assigned",
+        `Assigned to ${incident.code}: ${incident.title}`,
+        "team_assigned",
+      );
+      await history(
+        db,
+        userOf(req).id,
+        "incidents",
+        id,
+        null,
+        null,
+        `Response team ${team.name} assigned.`,
+        "team_assigned",
       );
       return item;
     });
@@ -178,6 +213,26 @@ router.patch("/team-assignments/:id", async (req, res) => {
       "team_assignments",
       id,
       v,
+    );
+    await history(
+      db,
+      user.id,
+      "teams",
+      team.id,
+      previous.status,
+      v.status,
+      "Assignment status updated.",
+      "assignment_updated",
+    );
+    await history(
+      db,
+      user.id,
+      "incidents",
+      link.incident_id,
+      null,
+      null,
+      `${team.name}: ${v.status.replaceAll("_", " ")}`,
+      "assignment_updated",
     );
     return item;
   });

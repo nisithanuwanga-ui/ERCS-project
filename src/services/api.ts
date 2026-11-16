@@ -1,19 +1,37 @@
 export class ApiError extends Error {
   status: number;
-  constructor(status: number, message: string) {
+  retryAfterSeconds?: number;
+  constructor(status: number, message: string, retryAfterSeconds?: number) {
     super(message);
     this.status = status;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
+}
+
+function retryDelay(res: Response, value: unknown): number | undefined {
+  if (res.status !== 429) return undefined;
+  if (typeof value === "number" && Number.isFinite(value) && value >= 0)
+    return Math.max(1, Math.ceil(value));
+  const header = res.headers.get("Retry-After");
+  if (!header) return undefined;
+  const seconds = /^\d+(?:\.\d+)?$/.test(header)
+    ? Number(header)
+    : (Date.parse(header) - Date.now()) / 1000;
+  return Number.isFinite(seconds) ? Math.max(1, Math.ceil(seconds)) : undefined;
 }
 let csrf = "";
 async function token() {
   if (!csrf) {
     const res = await fetch("/api/auth/csrf", { credentials: "include" });
-    if (!res.ok)
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
       throw new ApiError(
         res.status,
-        "Cannot connect to the server. Please try again.",
+        body.error?.message ??
+          "Cannot connect to the server. Please try again.",
+        retryDelay(res, body.error?.retryAfterSeconds),
       );
+    }
     csrf = (await res.json()).data.token;
   }
   return csrf;
@@ -48,6 +66,7 @@ export async function api<T>(
     throw new ApiError(
       res.status,
       body.error?.message ?? "The server could not complete this request.",
+      retryDelay(res, body.error?.retryAfterSeconds),
     );
   }
   return body as T;

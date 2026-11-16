@@ -70,6 +70,17 @@ router.patch("/incidents/:id", permit("incidents.manage"), async (req, res) => {
         previous.status,
         v.status,
       );
+    else
+      await history(
+        db,
+        userOf(req).id,
+        "incidents",
+        id,
+        null,
+        null,
+        "Incident details updated.",
+        "record_updated",
+      );
     await audit(db, userOf(req).id, "incident.updated", "incidents", id, v);
     return item;
   });

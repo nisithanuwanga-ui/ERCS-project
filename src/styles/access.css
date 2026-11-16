@@ -1,152 +1,221 @@
 .access-page {
   min-height: 100dvh;
   display: grid;
-  grid-template-columns: 1fr 1.04fr;
-  background: #f8fafc;
-  padding: 14px;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  background: #f4f7fb;
+  padding: 20px;
+  gap: 20px;
 }
 .access-form-panel {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 23px 32px;
   min-width: 0;
+  padding: 22px clamp(16px, 3vw, 56px);
 }
 .access-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 20px;
 }
 .access-header .brand {
-  font-size: 23px;
+  font-size: 27px;
 }
 .access-header .brand small {
-  font-size: 8px;
+  font-size: 11px;
 }
 .access-header .brand-mark {
-  width: 39px;
-  height: 39px;
-  border-radius: 11px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
 }
 .access-header .back-link {
   align-self: auto;
-  font-size: 10px;
-  gap: 7px;
+  font-size: clamp(15px, 1.1vw, 16px);
+  gap: 8px;
+  color: #475569;
 }
 .access-form-card {
   width: 100%;
-  max-width: 365px;
-  margin: 45px auto;
+  max-width: 470px;
+  margin: clamp(36px, 5vh, 68px) auto;
+  animation: access-enter 450ms ease-out both;
 }
 .access-form-card > .icon-circle {
-  width: 45px;
-  height: 45px;
+  width: 54px;
+  height: 54px;
   margin-bottom: 24px;
+  border-radius: 16px;
 }
 .access-form-card > .eyebrow {
-  font-size: 8px;
-  letter-spacing: 0.14em;
-  color: #8393aa;
+  font-size: clamp(13px, 1vw, 14px);
+  letter-spacing: 0.12em;
+  color: #0f766e;
 }
 .access-form-card h1 {
-  font-size: 35px;
-  letter-spacing: -0.05em;
+  font-size: clamp(36px, 3.2vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
   margin-top: 14px;
   font-weight: 750;
 }
 .access-form-card > p {
-  font-size: 12px;
-  color: #7a8ba1;
-  line-height: 1.85;
-  margin: 13px 0 28px;
+  font-size: clamp(18px, 1.35vw, 20px);
+  color: #52647b;
+  line-height: 1.65;
+  margin: 16px 0 30px;
 }
 .access-form-card .form-stack {
-  gap: 20px;
+  gap: 22px;
 }
 .access-form-card label {
-  font-size: 11px;
+  font-size: clamp(16px, 1.2vw, 18px);
   font-weight: 600;
-  color: #41536c;
-  gap: 9px;
+  color: #334155;
+  gap: 10px;
 }
 .access-form-card input {
-  font-size: 12px;
-  min-height: 46px;
-  border-color: #d9e3ed;
-  border-radius: 7px;
+  font-size: clamp(17px, 1.2vw, 18px);
+  min-height: 56px;
+  padding: 14px 16px;
+  border: 1px solid #bdccdc;
+  border-radius: 10px;
   background: #fff;
-  box-shadow: 0 2px 2px #1e293b02;
+  color: #1e293b;
+  box-shadow: 0 2px 3px #1e293b03;
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
+}
+.access-form-card input::placeholder {
+  color: #738297;
+  opacity: 1;
+}
+.access-form-card input:focus {
+  border-color: #2563eb;
+  outline: 3px solid #2563eb24;
+  outline-offset: 2px;
 }
 .access-form-card .password-wrap input {
-  padding-right: 43px;
+  padding-right: 56px;
 }
 .access-form-card .password-wrap button {
-  top: 10px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  color: #52647b;
+  border-radius: 7px;
 }
 .access-form-card .button.full {
-  margin-top: 3px;
-  padding: 14px;
-  font-size: 12px;
+  margin-top: 2px;
+  min-height: 56px;
+  padding: 15px 20px;
+  font-size: clamp(17px, 1.2vw, 18px);
+  border-radius: 10px;
+  gap: 12px;
 }
 .access-form-card .checkbox {
-  font-size: 10px;
-  color: #778aa1;
+  font-size: clamp(15px, 1.1vw, 16px);
+  line-height: 1.5;
+  color: #52647b;
   font-weight: 400;
+  gap: 10px;
+  align-items: center;
 }
 .access-form-card .checkbox input {
-  width: 13px;
-  min-height: 13px;
+  width: 19px;
+  height: 19px;
+  min-height: 19px;
+  padding: 0;
   margin: 0;
+  accent-color: #2563eb;
+  flex-shrink: 0;
 }
 .access-form-card .auth-switch {
-  font-size: 10px;
+  font-size: 16px;
   text-align: center;
-  color: #8495aa;
-  margin: 23px 0;
+  color: #52647b;
+  margin: 26px 0;
 }
 .access-form-card .auth-switch a {
-  color: #2563eb;
-  font-weight: 600;
+  color: #1d4ed8;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .access-form-card .security-note {
-  font-size: 9px;
-  line-height: 1.8;
-  padding: 15px;
-  background: #f0f4f8;
-  border-color: #e4ebf2;
-  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: clamp(15px, 1vw, 16px);
+  line-height: 1.7;
+  padding: 18px;
+  color: #52647b;
+  background: #eaf0f7;
+  border: 1px solid #dce5ef;
+  border-radius: 12px;
 }
 .access-form-card .security-note svg {
-  width: 16px;
+  width: 20px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #0f766e;
 }
 .access-form-card .form-stack > small {
-  font-size: 9px;
-  line-height: 1.8;
-  color: #7e8fa6;
-  margin-top: -7px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #52647b;
+  margin-top: -8px;
+}
+.access-form-card .message {
+  font-size: clamp(15px, 1.1vw, 16px);
+  line-height: 1.65;
+  margin-bottom: 24px;
 }
 .access-form-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  font-size: 8px;
-  color: #93a2b6;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 15px;
+  color: #596e85;
 }
 .access-form-footer small {
-  font-size: 8px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 .access-form-footer > span {
   color: #0f766e;
-  border: 1px solid #d6e8e1;
+  border: 1px solid #c7dfd6;
   background: #eaf4ef;
-  border-radius: 4px;
-  padding: 4px 6px;
-  font-size: 7px;
-  white-space: nowrap;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+.access-spinner {
+  animation: access-spin 900ms linear infinite;
+}
+@keyframes access-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes access-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .access-visual {
   border-radius: 15px;
@@ -577,92 +646,129 @@
     translate: 0 -6px;
   }
 }
-@media (min-width: 1550px) {
+
+/* Illustration copy is intentionally readable at standard desktop zoom. */
+.access-visual {
+  min-height: 880px;
+  border-radius: 24px;
+}
+.access-visual-index {
+  font-size: 11px;
+}
+.visual-security-label {
+  font-size: 13px;
+  padding: 8px 12px;
+}
+.network-core > small {
+  font-size: 11px;
+}
+.network-tag small {
+  font-size: 10px;
+  color: #5d748c;
+}
+.network-tag strong {
+  font-size: 14px;
+}
+.network-tag {
+  padding: 14px 16px;
+}
+.network-security-card strong {
+  font-size: 15px;
+}
+.network-security-card small {
+  font-size: 13px;
+  color: #5d748c;
+}
+.access-visual-copy {
+  padding: 30px 42px 38px;
+}
+.access-visual-copy > .eyebrow {
+  font-size: 12px;
+}
+.access-visual-copy h2 {
+  font-size: clamp(30px, 2.7vw, 42px);
+}
+.access-visual-copy > p {
+  max-width: 470px;
+  font-size: 17px;
+  color: #526d83;
+  line-height: 1.7;
+}
+.access-visual-foot {
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.access-visual-foot > span {
+  font-size: 13px;
+  color: #526d83;
+}
+.activation-page .access-form-card h1 {
+  font-size: clamp(34px, 3vw, 44px);
+}
+@media (min-width: 1700px) {
   .access-page {
-    max-width: 1800px;
+    max-width: 1900px;
     margin: auto;
   }
   .access-form-panel {
-    padding: 30px 50px;
+    padding-inline: 64px;
   }
   .access-form-card {
-    max-width: 400px;
-  }
-  .access-visual {
-    min-height: 850px;
+    max-width: 510px;
   }
   .network-artwork {
     max-height: 580px;
   }
-  .access-visual-copy {
-    padding-inline: 65px;
-    padding-bottom: 45px;
-  }
 }
-@media (max-width: 1050px) {
+@media (max-width: 1150px) {
   .access-page {
-    grid-template-columns: 1fr 1fr;
-    padding: 10px;
-    gap: 10px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    padding: 14px;
+    gap: 14px;
   }
   .access-form-panel {
-    padding: 20px;
+    padding: 18px;
   }
-  .access-header .back-link {
-    font-size: 0;
-    gap: 0;
-  }
-  .access-header .back-link svg {
-    font-size: 12px;
+  .access-header {
+    gap: 16px;
   }
   .access-visual-top {
-    padding: 27px 21px;
+    padding: 28px 22px;
+    flex-wrap: wrap;
   }
   .access-visual-index {
-    font-size: 6px;
+    font-size: 10px;
   }
-  .visual-security-label {
-    font-size: 7px;
+  .access-visual-copy {
+    padding: 25px 28px 32px;
   }
-  .access-form-card {
-    max-width: 330px;
+  .access-visual-copy > p {
+    font-size: 16px;
   }
   .network-tag {
-    padding: 10px;
+    padding: 12px;
+  }
+  .network-tag small {
+    font-size: 9px;
+  }
+  .network-tag strong {
+    font-size: 12px;
   }
   .tag-incidents {
     left: 3%;
-    top: 15%;
+    top: 12%;
   }
   .tag-resources {
     right: 2%;
-    top: 32%;
+    top: 30%;
   }
   .network-security-card {
-    left: 8%;
-    padding: 13px;
+    left: 6%;
+    right: 6%;
+    padding: 14px;
   }
   .network-security-card > svg {
     display: none;
-  }
-  .access-visual-copy {
-    padding: 25px 30px 30px;
-  }
-  .access-visual-copy h2 {
-    font-size: 30px;
-  }
-  .access-visual-copy p {
-    font-size: 11px;
-  }
-  .access-visual-foot {
-    gap: 13px;
-    flex-wrap: wrap;
-  }
-  .access-visual-foot > span {
-    font-size: 7px;
-  }
-  .invite-person {
-    padding: 10px;
   }
   .person-one {
     left: 3%;
@@ -675,72 +781,68 @@
     height: 210px;
   }
 }
-@media (max-width: 740px) {
+@media (max-width: 850px) {
   .access-page {
     display: block;
     padding: 0;
-    background: #f5f8fb;
+    background:
+      radial-gradient(ellipse at 100% 0, #dcebf2, transparent 60%), #f4f7fb;
   }
   .access-visual {
     display: none;
   }
   .access-form-panel {
-    padding: 25px 24px;
+    padding: 28px clamp(20px, 6vw, 56px);
     min-height: 100dvh;
   }
-  .access-header .back-link {
-    font-size: 9px;
-    gap: 5px;
-  }
   .access-header .brand {
-    font-size: 21px;
-  }
-  .access-header .brand-mark {
-    width: 36px;
-    height: 36px;
+    font-size: 25px;
   }
   .access-header .brand small {
-    font-size: 7px;
+    font-size: 10px;
   }
-  .access-form-card {
-    max-width: 390px;
-    margin: 55px auto;
-  }
-  .access-form-card > .icon-circle {
+  .access-header .brand-mark {
     width: 43px;
     height: 43px;
   }
+  .access-header .back-link {
+    font-size: 16px;
+  }
+  .access-form-card {
+    margin: 46px auto;
+    max-width: 500px;
+  }
   .access-form-card h1 {
-    font-size: 33px;
-  }
-  .access-form-card > p {
-    font-size: 12px;
-  }
-  .access-form-card input {
-    min-height: 47px;
-  }
-  .access-form-card .button.full {
-    min-height: 47px;
+    font-size: clamp(36px, 5vw, 44px);
   }
   .access-form-footer {
-    font-size: 7px;
-    align-items: start;
-  }
-  .access-form-footer small {
-    font-size: 7px;
-    line-height: 1.7;
-    max-width: 170px;
+    justify-content: center;
+    text-align: center;
   }
   .activation-page .access-form-card {
     margin: 40px auto;
   }
-  .activation-page .access-form-card h1 {
-    font-size: 29px;
+}
+@media (max-width: 400px) {
+  .access-header .back-link {
+    gap: 4px;
+    font-size: 15px;
   }
-  .access-form-card .checkbox {
-    font-size: 10px;
+  .access-header .brand {
+    gap: 8px;
   }
-  .access-form-card .auth-switch {
-    font-size: 10px;
+  .access-header .brand small {
+    max-width: 120px;
+  }
+  .access-form-card .security-note {
+    padding: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .access-page *,
+  .access-page *::before,
+  .access-page *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

@@ -1,7 +1,13 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { can } from "../../shared/domain";
 import type { RecordData } from "../../shared/domain";
 import { useAuth } from "../app/useAuth";
@@ -136,6 +142,20 @@ export function RecordEditor({
     return <Navigate to="/403" replace />;
   if (edit && result.loading) return <Loading />;
   if (edit && result.error) return <Message>{result.error}</Message>;
+  if (
+    edit &&
+    config.key === "resource-requests" &&
+    result.data &&
+    (result.data.data.status !== "pending" ||
+      (result.data.data.requester_id !== user.id &&
+        !can(user.role, "requests.review")))
+  )
+    return (
+      <Message>
+        Only pending requests belonging to you can be edited. Coordinators can
+        also edit pending requests.
+      </Message>
+    );
   return (
     <EditorForm
       key={`${config.key}-${id ?? "new"}`}
@@ -155,7 +175,14 @@ function EditorForm({
   initial?: Detail;
 }) {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [values, setValues] = useState<Record<string, unknown>>(() => ({
+    ...(config.key === "resource-requests"
+      ? { incident_id: params.get("incident_id") ?? "" }
+      : {}),
+    ...(config.key === "allocations"
+      ? { request_id: params.get("request_id") ?? "" }
+      : {}),
     ...initial?.data,
     member_ids: initial?.details?.members?.map((x) => x.id) ?? [],
   }));
@@ -200,6 +227,25 @@ function EditorForm({
         body[field.key] = value || null;
       else body[field.key] = value ?? "";
     }
+    if (
+      config.key === "resource-requests" &&
+      Boolean(body.resource_id) === Boolean(body.category_id)
+    ) {
+      setError(
+        "Select a specific resource or a resource category. Choose one so the request can be fulfilled correctly.",
+      );
+      setPending(false);
+      return;
+    }
+    if (
+      config.key === "resources" &&
+      body.kind === "asset" &&
+      body.total_quantity !== 1
+    ) {
+      setError("An indivisible asset must have a total quantity of one.");
+      setPending(false);
+      return;
+    }
     try {
       const r = await api<{ data: RecordData & { token?: string } }>(
         `/${config.key}${id ? `/${id}` : ""}`,
@@ -225,6 +271,89 @@ function EditorForm({
       setPending(false);
     }
   }
+  const guidance: Record<
+    string,
+    { title: string; copy: string; steps: string[] }
+  > = {
+    incidents: {
+      title: "Build the operational picture",
+      copy: "Describe the event, assess the impact, and pinpoint where the response is needed.",
+      steps: [
+        "Report and assess",
+        "Assign response teams",
+        "Track to resolution",
+      ],
+    },
+    resources: {
+      title: "Register response capacity",
+      copy: "Record accurate quantities and a storage location. The minimum threshold will flag stock that needs attention.",
+      steps: [
+        "Identify the resource",
+        "Set stock and readiness",
+        "Monitor movements",
+      ],
+    },
+    "resource-requests": {
+      title: "Connect demand to an incident",
+      copy: "Request a specific resource or an eligible category. A coordinator reviews each request before resources can be allocated.",
+      steps: [
+        "Describe the need",
+        "Coordinator review",
+        "Allocate approved stock",
+      ],
+    },
+    allocations: {
+      title: "Deploy approved resources",
+      copy: "Select an approved request, choose eligible stock, and enter the quantity to deploy. Partial fulfillment is supported.",
+      steps: [
+        "Choose approved demand",
+        "Check eligible availability",
+        "Track deployment and returns",
+      ],
+    },
+    teams: {
+      title: "Prepare a response unit",
+      copy: "Choose a team type, an active leader, and authorized members. Available teams can then be assigned to an incident.",
+      steps: ["Define the team", "Choose personnel", "Manage assignments"],
+    },
+  };
+  const context = guidance[config.key];
+  const sectionDefinitions: Record<string, [string, string[]][]> = {
+    incidents: [
+      ["Event details", ["title", "category_id", "description"]],
+      ["Impact and response priority", ["severity", "priority", "location"]],
+    ],
+    resources: [
+      ["Resource identity", ["name", "category_id", "description", "kind"]],
+      [
+        "Stock and readiness",
+        ["total_quantity", "threshold", "status", "location"],
+      ],
+    ],
+    "resource-requests": [
+      [
+        "Incident and demand",
+        ["incident_id", "resource_id", "category_id", "quantity"],
+      ],
+      ["Priority and justification", ["priority", "justification"]],
+    ],
+    allocations: [
+      ["Approved demand", ["request_id"]],
+      ["Resource deployment", ["resource_id", "quantity"]],
+    ],
+    teams: [
+      ["Team profile", ["name", "type_id", "contact", "status"]],
+      ["Authorized personnel", ["lead_id", "member_ids"]],
+    ],
+  };
+  const sections = (
+    sectionDefinitions[config.key] ?? [
+      [`${config.singular} information`, fields.map((field) => field.key)],
+    ]
+  ).map(([title, keys]) => ({
+    title,
+    fields: fields.filter((field) => keys.includes(field.key)),
+  }));
   return (
     <>
       <Link className="back-link" to={config.path}>
@@ -240,7 +369,8 @@ function EditorForm({
       >
         {config.key === "users" && !id
           ? "The role is assigned here. Your invitation expires in 48 hours."
-          : "Provide clear information to keep your response coordinated."}
+          : (context?.copy ??
+            "Provide clear information to keep your response coordinated.")}
       </PageTitle>
       {invitation ? (
         <section className="panel panel-padding">
@@ -265,131 +395,212 @@ function EditorForm({
           </Link>
         </section>
       ) : (
-        <form className="panel editor-form" onSubmit={submit}>
-          {error && <Message>{error}</Message>}
-          <div className="form-section-heading">
-            <span className="section-number">01</span>
-            <div>
-              <h2>{config.singular} information</h2>
-              <p>Required fields are marked with an asterisk.</p>
-            </div>
-          </div>
-          <div className="form-grid">
-            {fields.map((field) => (
-              <div
-                key={field.key}
-                className={
-                  field.type === "textarea"
-                    ? "span-two"
-                    : field.type === "checkbox"
-                      ? "checkbox"
-                      : ""
-                }
-              >
-                <label htmlFor={`field-${field.key}`}>
-                  {field.label}
-                  {field.required ? " *" : ""}
-                </label>
-                {field.source ? (
-                  <SelectField
-                    field={field}
-                    value={values[field.key]}
-                    onChange={(value) =>
-                      setValues((v) => ({ ...v, [field.key]: value }))
-                    }
-                    recordId={
-                      config.key === "allocations" ? "allocation" : undefined
-                    }
-                    requestId={
-                      config.key === "allocations"
-                        ? String(values.request_id ?? "")
-                        : undefined
-                    }
-                  />
-                ) : field.type === "select" ? (
-                  <select
-                    id={`field-${field.key}`}
-                    name={field.key}
-                    required={field.required}
-                    value={String(values[field.key] ?? "")}
-                    onChange={(e) =>
-                      setValues((v) => ({ ...v, [field.key]: e.target.value }))
-                    }
-                  >
-                    <option value="">Select an option</option>
-                    {field.options?.map((option) => (
-                      <option value={option} key={option}>
-                        {option.replaceAll("_", " ")}
-                      </option>
-                    ))}
-                  </select>
-                ) : field.type === "textarea" ? (
-                  <textarea
-                    id={`field-${field.key}`}
-                    name={field.key}
-                    required={field.required}
-                    minLength={field.min}
-                    maxLength={5000}
-                    value={String(values[field.key] ?? "")}
-                    onChange={(e) =>
-                      setValues((v) => ({ ...v, [field.key]: e.target.value }))
-                    }
-                  />
-                ) : field.type === "checkbox" ? (
-                  <input
-                    id={`field-${field.key}`}
-                    name={field.key}
-                    type="checkbox"
-                    checked={Boolean(values[field.key])}
-                    onChange={(e) =>
-                      setValues((v) => ({
-                        ...v,
-                        [field.key]: e.target.checked,
-                      }))
-                    }
-                  />
-                ) : (
-                  <input
-                    id={`field-${field.key}`}
-                    name={field.key}
-                    type={field.type ?? "text"}
-                    required={field.required}
-                    min={field.min}
-                    max={field.max}
-                    maxLength={field.type === "number" ? undefined : 160}
-                    value={String(values[field.key] ?? "")}
-                    onChange={(e) =>
-                      setValues((v) => ({ ...v, [field.key]: e.target.value }))
-                    }
-                  />
-                )}{" "}
-                {field.hint && <small>{field.hint}</small>}
-              </div>
+        <div className="workflow-editor-layout">
+          <form
+            className="panel editor-form"
+            onSubmit={submit}
+            aria-busy={pending}
+          >
+            {error && <Message>{error}</Message>}
+            <p className="muted small-text">
+              Required fields are marked with an asterisk.
+            </p>
+            {sections.map((section, index) => (
+              <section className="workflow-step" key={section.title}>
+                <div className="form-section-heading">
+                  <span className="section-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h2>{section.title}</h2>
+                  </div>
+                </div>
+                <div className="form-grid">
+                  {section.fields.map((field) => (
+                    <div
+                      key={field.key}
+                      className={
+                        field.type === "textarea"
+                          ? "span-two"
+                          : field.type === "checkbox"
+                            ? "checkbox"
+                            : ""
+                      }
+                    >
+                      <label htmlFor={`field-${field.key}`}>
+                        {field.label}
+                        {field.required ? " *" : ""}
+                      </label>
+                      {field.source ? (
+                        <SelectField
+                          field={field}
+                          value={values[field.key]}
+                          onChange={(value) =>
+                            setValues((v) => ({
+                              ...v,
+                              ...(config.key === "allocations" &&
+                              field.key === "request_id"
+                                ? { resource_id: "" }
+                                : {}),
+                              ...(config.key === "resource-requests" &&
+                              value &&
+                              field.key === "resource_id"
+                                ? { category_id: "" }
+                                : {}),
+                              ...(config.key === "resource-requests" &&
+                              value &&
+                              field.key === "category_id"
+                                ? { resource_id: "" }
+                                : {}),
+                              [field.key]: value,
+                            }))
+                          }
+                          recordId={
+                            config.key === "allocations"
+                              ? "allocation"
+                              : undefined
+                          }
+                          requestId={
+                            config.key === "allocations"
+                              ? String(values.request_id ?? "")
+                              : undefined
+                          }
+                        />
+                      ) : field.type === "select" ? (
+                        <select
+                          id={`field-${field.key}`}
+                          name={field.key}
+                          required={field.required}
+                          value={String(values[field.key] ?? "")}
+                          onChange={(e) =>
+                            setValues((v) => ({
+                              ...v,
+                              [field.key]: e.target.value,
+                            }))
+                          }
+                        >
+                          <option value="">Select an option</option>
+                          {field.options?.map((option) => (
+                            <option value={option} key={option}>
+                              {option.replaceAll("_", " ")}
+                            </option>
+                          ))}
+                        </select>
+                      ) : field.type === "textarea" ? (
+                        <textarea
+                          id={`field-${field.key}`}
+                          name={field.key}
+                          required={field.required}
+                          minLength={field.min}
+                          maxLength={5000}
+                          value={String(values[field.key] ?? "")}
+                          onChange={(e) =>
+                            setValues((v) => ({
+                              ...v,
+                              [field.key]: e.target.value,
+                            }))
+                          }
+                        />
+                      ) : field.type === "checkbox" ? (
+                        <input
+                          id={`field-${field.key}`}
+                          name={field.key}
+                          type="checkbox"
+                          checked={Boolean(values[field.key])}
+                          onChange={(e) =>
+                            setValues((v) => ({
+                              ...v,
+                              [field.key]: e.target.checked,
+                            }))
+                          }
+                        />
+                      ) : (
+                        <input
+                          id={`field-${field.key}`}
+                          name={field.key}
+                          type={field.type ?? "text"}
+                          required={field.required}
+                          min={
+                            field.key === "total_quantity" && id
+                              ? Number(
+                                  initial?.data.allocated_quantity ??
+                                    field.min ??
+                                    0,
+                                )
+                              : field.min
+                          }
+                          max={field.max}
+                          step={field.type === "number" ? 1 : undefined}
+                          maxLength={field.type === "number" ? undefined : 160}
+                          value={String(values[field.key] ?? "")}
+                          onChange={(e) =>
+                            setValues((v) => ({
+                              ...v,
+                              [field.key]: e.target.value,
+                            }))
+                          }
+                        />
+                      )}{" "}
+                      {field.hint && <small>{field.hint}</small>}
+                    </div>
+                  ))}
+                </div>
+              </section>
             ))}
-          </div>
-          {config.key === "allocations" && (
-            <div className="info-note">
-              Allocation checks the approved outstanding demand, resource
-              eligibility, and current availability together. Retries of this
-              submission use the same operation key.
+            {config.key === "allocations" && (
+              <div className="info-note">
+                Only approved outstanding demand can be allocated. Availability
+                is checked again when you save. You can allocate a smaller
+                quantity and fulfill the remainder later.
+              </div>
+            )}
+            <div className="form-actions">
+              <Link className="button secondary" to={config.path}>
+                Cancel
+              </Link>
+              <button className="button" disabled={pending}>
+                {pending
+                  ? "Saving…"
+                  : id
+                    ? "Save changes"
+                    : config.key === "users"
+                      ? "Create invitation"
+                      : `Create ${config.singular.toLowerCase()}`}
+                <ArrowRight size={16} />
+              </button>
             </div>
+          </form>
+          {context && (
+            <aside className="panel panel-padding workflow-form-context">
+              <span className="eyebrow">{config.singular} workflow</span>
+              <h2>{context.title}</h2>
+              <p>{context.copy}</p>
+              <ol className="workflow-progress">
+                {context.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              {config.key === "resources" && (
+                <p className="info-note">
+                  Allocated quantities stay reserved. Stock adjustments cannot
+                  reduce total quantity below outstanding allocations.
+                </p>
+              )}
+              {config.key === "teams" && (
+                <p className="info-note">
+                  A team can have one active assignment at a time. Complete its
+                  deployment before marking it unavailable.
+                </p>
+              )}
+              {config.key === "resource-requests" && (
+                <p className="info-note">
+                  Requests begin as pending. Record the quantity and operational
+                  justification so the coordinator can make a clear decision.
+                </p>
+              )}
+            </aside>
           )}
-          <div className="form-actions">
-            <Link className="button secondary" to={config.path}>
-              Cancel
-            </Link>
-            <button className="button" disabled={pending}>
-              {pending
-                ? "Saving…"
-                : id
-                  ? "Save changes"
-                  : config.key === "users"
-                    ? "Create invitation"
-                    : `Create ${config.singular.toLowerCase()}`}
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        </form>
+        </div>
       )}
     </>
   );

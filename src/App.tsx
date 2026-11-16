@@ -7,12 +7,45 @@ import { AuthPage } from "./pages/AuthPage";
 import { AppLayout } from "./components/layout/AppLayout";
 import { modules } from "./features/modules";
 import "./styles/app.css";
+import "./styles/management.css";
 const Dashboard = lazy(() =>
   import("./features/Dashboard").then((m) => ({ default: m.Dashboard })),
 );
 const RecordList = lazy(() =>
   import("./features/RecordList").then((m) => ({ default: m.RecordList })),
 );
+const IncidentsWorkspace = lazy(() =>
+  import("./features/ManagementWorkspaces").then((m) => ({
+    default: m.IncidentsWorkspace,
+  })),
+);
+const InventoryWorkspace = lazy(() =>
+  import("./features/ManagementWorkspaces").then((m) => ({
+    default: m.InventoryWorkspace,
+  })),
+);
+const RequestsWorkspace = lazy(() =>
+  import("./features/ManagementWorkspaces").then((m) => ({
+    default: m.RequestsWorkspace,
+  })),
+);
+const AllocationsWorkspace = lazy(() =>
+  import("./features/ManagementWorkspaces").then((m) => ({
+    default: m.AllocationsWorkspace,
+  })),
+);
+const TeamsWorkspace = lazy(() =>
+  import("./features/ManagementWorkspaces").then((m) => ({
+    default: m.TeamsWorkspace,
+  })),
+);
+const workspaces: Record<string, React.ComponentType> = {
+  incidents: IncidentsWorkspace,
+  resources: InventoryWorkspace,
+  "resource-requests": RequestsWorkspace,
+  allocations: AllocationsWorkspace,
+  teams: TeamsWorkspace,
+};
 const RecordEditor = lazy(() =>
   import("./features/RecordEditor").then((m) => ({ default: m.RecordEditor })),
 );
@@ -53,30 +86,39 @@ function App() {
               />
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
-                {Object.values(modules).map((config) => (
-                  <Route key={config.key}>
-                    <Route
-                      path={config.path}
-                      element={<RecordList config={config} />}
-                    />
-                    {config.createPermission && (
+                {Object.values(modules).map((config) => {
+                  const Workspace = workspaces[config.key];
+                  return (
+                    <Route key={config.key}>
                       <Route
-                        path={`${config.path}/new`}
-                        element={<RecordEditor config={config} />}
+                        path={config.path}
+                        element={
+                          Workspace ? (
+                            <Workspace />
+                          ) : (
+                            <RecordList config={config} />
+                          )
+                        }
                       />
-                    )}
-                    <Route
-                      path={`${config.path}/:id`}
-                      element={<RecordDetails config={config} />}
-                    />
-                    {config.editPermission && (
+                      {config.createPermission && (
+                        <Route
+                          path={`${config.path}/new`}
+                          element={<RecordEditor config={config} />}
+                        />
+                      )}
                       <Route
-                        path={`${config.path}/:id/edit`}
-                        element={<RecordEditor config={config} edit />}
+                        path={`${config.path}/:id`}
+                        element={<RecordDetails config={config} />}
                       />
-                    )}
-                  </Route>
-                ))}
+                      {config.editPermission && (
+                        <Route
+                          path={`${config.path}/:id/edit`}
+                          element={<RecordEditor config={config} edit />}
+                        />
+                      )}
+                    </Route>
+                  );
+                })}
                 <Route
                   path="/resource-requests/:id/review"
                   element={
