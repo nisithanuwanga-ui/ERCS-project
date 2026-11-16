@@ -1,0 +1,28 @@
+name: Publish ERCS images manually
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  images:
+    if: github.ref_name == 'samhi-frontend-docker'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify preserved backend
+        run: node scripts/verify-backend.mjs --portable
+      - name: Build images
+        run: |
+          image_root="ghcr.io/${GITHUB_REPOSITORY,,}"
+          docker build -f docker/frontend.Dockerfile -t "$image_root-frontend:$GITHUB_SHA" .
+          docker build -f docker/backend.Dockerfile -t "$image_root-backend:$GITHUB_SHA" .
+      - name: Authenticate to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Publish commit-tagged images
+        run: |
+          image_root="ghcr.io/${GITHUB_REPOSITORY,,}"
+          docker push "$image_root-frontend:$GITHUB_SHA"
+          docker push "$image_root-backend:$GITHUB_SHA"

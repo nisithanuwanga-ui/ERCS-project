@@ -1,0 +1,82 @@
+# Complete pre-commit changed-file list
+
+Relative to the clean branch at dfde018. M = modified; ?? = new. No backend file is changed or deleted.
+
+```text
+?? .dockerignore
+?? .env.example
+?? .github/workflows/ci.yml
+?? .github/workflows/images.yml
+ M .gitignore
+?? compose.external.yaml
+?? compose.yaml
+?? docker/backend.Dockerfile
+?? docker/frontend.Dockerfile
+?? docker/nginx.conf
+?? docker/README.md
+?? docs/API-REQUIREMENTS.md
+?? docs/backend-integrity.json
+?? docs/CHANGED-FILES.md
+?? docs/frontend-transfer-manifest.json
+?? docs/VERIFICATION.md
+?? frontend/.env.example
+?? frontend/e2e/auth-cooldown.spec.ts
+?? frontend/e2e/auth-origins.spec.ts
+?? frontend/e2e/workflows.spec.ts
+ M frontend/index.html
+ M frontend/package-lock.json
+ M frontend/package.json
+?? frontend/playwright.config.ts
+?? frontend/public/ercs-mark.svg
+?? frontend/public/images/home/emergency-logistics-800.webp
+?? frontend/public/images/home/emergency-logistics.webp
+?? frontend/scripts/free-port.ts
+?? frontend/scripts/optimize-hero.mjs
+?? frontend/shared/domain.ts
+ M frontend/src/App.tsx
+?? frontend/src/app/Auth.tsx
+?? frontend/src/app/useAuth.ts
+ M frontend/src/components/auth/LoginForm.tsx
+ M frontend/src/components/auth/StatusIndicator.tsx
+?? frontend/src/components/layout/AppLayout.tsx
+?? frontend/src/components/layout/HeaderNotifications.tsx
+?? frontend/src/components/public/AccessVisuals.tsx
+?? frontend/src/components/public/IncidentStreamPreview.tsx
+?? frontend/src/components/public/PlatformPreview.tsx
+?? frontend/src/components/public/PublicHeader.tsx
+?? frontend/src/components/public/ResourceInventoryPreview.tsx
+?? frontend/src/components/public/TeamCoordinationPreview.tsx
+?? frontend/src/components/public/WorkflowExplorer.tsx
+?? frontend/src/components/ui.tsx
+?? frontend/src/features/Administration.tsx
+?? frontend/src/features/Dashboard.tsx
+?? frontend/src/features/ManagementWorkspaces.tsx
+?? frontend/src/features/modules.ts
+?? frontend/src/features/RecordDetails.tsx
+?? frontend/src/features/RecordEditor.tsx
+?? frontend/src/features/RecordList.tsx
+?? frontend/src/hooks/useApi.ts
+ M frontend/src/main.tsx
+?? frontend/src/pages/AuthPage.tsx
+?? frontend/src/pages/HomePage.tsx
+?? frontend/src/pages/InformationPage.tsx
+ M frontend/src/pages/LoginPage.tsx
+?? frontend/src/services/api.test.ts
+?? frontend/src/services/api.ts
+?? frontend/src/services/incident-contract.test.ts
+?? frontend/src/services/incident-contract.ts
+?? frontend/src/services/team-api.test.ts
+?? frontend/src/styles/access.css
+?? frontend/src/styles/app.css
+?? frontend/src/styles/dashboard.css
+?? frontend/src/styles/integration.css
+?? frontend/src/styles/management.css
+?? frontend/src/styles/public.css
+?? frontend/src/styles/workspace.css
+ M frontend/tsconfig.app.json
+ M frontend/vite.config.ts
+?? frontend/vitest.config.ts
+ M README.md
+?? scripts/smoke-incidents.mjs
+?? scripts/verify-backend.mjs
+```

@@ -1,0 +1,292 @@
+[
+  {
+    "source": "src/app/Auth.tsx",
+    "destination": "frontend/src/app/Auth.tsx",
+    "sha256": "B6CCD421C738FE10019276D695DA4EEDDE8687D79FC14909B7FB8B523B123CB7"
+  },
+  {
+    "source": "src/app/useAuth.ts",
+    "destination": "frontend/src/app/useAuth.ts",
+    "sha256": "3F460201C408435E336D19C330778F30847D841119832F13D9B3BBE6C5800427"
+  },
+  {
+    "source": "src/App.css",
+    "destination": "frontend/src/App.css",
+    "sha256": "16296ED4EFE36AA5C87EA5F69D02C841217ABB8C8CE55A97DBB56861444E378A"
+  },
+  {
+    "source": "src/App.tsx",
+    "destination": "frontend/src/App.tsx",
+    "sha256": "3706F6A7ADBCC870D743F1B6949080810EC207315E8A2BBDF5E100594B92166F"
+  },
+  {
+    "source": "src/assets/hero.png",
+    "destination": "frontend/src/assets/hero.png",
+    "sha256": "881FFBCAAFC212E49ADDAD08846A5B82761355FA20624253AF3477BA33262C5C"
+  },
+  {
+    "source": "src/assets/react.svg",
+    "destination": "frontend/src/assets/react.svg",
+    "sha256": "35EF61ED53B323AE94A16A8EC659B3D0AF3880698791133F23B084085AB1C2E5"
+  },
+  {
+    "source": "src/assets/vite.svg",
+    "destination": "frontend/src/assets/vite.svg",
+    "sha256": "2F1F6C6F90A0EF7422CBB4CFAFCD8AD329C507A18AFDC34CC21FA72179B9C54A"
+  },
+  {
+    "source": "src/components/auth/EmergencyNetwork.tsx",
+    "destination": "frontend/src/components/auth/EmergencyNetwork.tsx",
+    "sha256": "832391EBCD1947EA2A312E6D586CB04BB1BCBFB8C6425EBC12975354B633E1AC"
+  },
+  {
+    "source": "src/components/auth/ERCSBrand.tsx",
+    "destination": "frontend/src/components/auth/ERCSBrand.tsx",
+    "sha256": "7FBD14BDD5D6E8ADA1B6BC7CA7CEE8F67E5D79242575D5DD88B52C58A3D2E9B6"
+  },
+  {
+    "source": "src/components/auth/LoginForm.tsx",
+    "destination": "frontend/src/components/auth/LoginForm.tsx",
+    "sha256": "2026884FD54D64623713553A4C4163700B199D05CCE737B6B1C140AD9A77E7D9"
+  },
+  {
+    "source": "src/components/auth/SecurityNotice.tsx",
+    "destination": "frontend/src/components/auth/SecurityNotice.tsx",
+    "sha256": "5DA20BA75529F28EA3B41B24B9833D46F97C9892B3E64DF3559352E906659080"
+  },
+  {
+    "source": "src/components/auth/StatusIndicator.tsx",
+    "destination": "frontend/src/components/auth/StatusIndicator.tsx",
+    "sha256": "EB4912172CEB50C24FE0259581843C867DA24D9BA6A3919E6064D386461C95E7"
+  },
+  {
+    "source": "src/components/layout/AppLayout.tsx",
+    "destination": "frontend/src/components/layout/AppLayout.tsx",
+    "sha256": "067BE5F97C588B2747F9C2165810F4A390B1DBA31B74780C1DADFDD7101C4F65"
+  },
+  {
+    "source": "src/components/layout/HeaderNotifications.tsx",
+    "destination": "frontend/src/components/layout/HeaderNotifications.tsx",
+    "sha256": "759F833DD27A8C811CD12DBCBAE3339D7392581EF09394F708D429A6B0390956"
+  },
+  {
+    "source": "src/components/public/AccessVisuals.tsx",
+    "destination": "frontend/src/components/public/AccessVisuals.tsx",
+    "sha256": "1745021ECA1EE6EEF943C9AE0014A7AD10E570589F9DEABA04408E367867F941"
+  },
+  {
+    "source": "src/components/public/IncidentStreamPreview.tsx",
+    "destination": "frontend/src/components/public/IncidentStreamPreview.tsx",
+    "sha256": "97DA00B178C131C088649A07E7FA8AE0702D39BD8C3FD7CBDF41D898B3D8CE80"
+  },
+  {
+    "source": "src/components/public/PlatformPreview.tsx",
+    "destination": "frontend/src/components/public/PlatformPreview.tsx",
+    "sha256": "66AD81ED9A2938503B16DD125F3CCBF76C60C46764ECBF74DA9E1B009FC2C3FC"
+  },
+  {
+    "source": "src/components/public/PublicHeader.tsx",
+    "destination": "frontend/src/components/public/PublicHeader.tsx",
+    "sha256": "BC6DB9B74684F131BC088F9871A28AFB06BE252D097C9F8AB242C5CCAB0A0284"
+  },
+  {
+    "source": "src/components/public/ResourceInventoryPreview.tsx",
+    "destination": "frontend/src/components/public/ResourceInventoryPreview.tsx",
+    "sha256": "C10DD01BC5806C9A0B6A094D448E359E24A1E9A4EA6603415EB10D0EA8D3DCA8"
+  },
+  {
+    "source": "src/components/public/TeamCoordinationPreview.tsx",
+    "destination": "frontend/src/components/public/TeamCoordinationPreview.tsx",
+    "sha256": "D9338C60490409D4A2F8E49D10D6971E5479D372693D587084F3845FCF909924"
+  },
+  {
+    "source": "src/components/public/WorkflowExplorer.tsx",
+    "destination": "frontend/src/components/public/WorkflowExplorer.tsx",
+    "sha256": "5B776801834D7731BA79E6EEDE855E79D8A2023FD93C6B6B5FD273B61F0E3B94"
+  },
+  {
+    "source": "src/components/ui.tsx",
+    "destination": "frontend/src/components/ui.tsx",
+    "sha256": "4E81B3614393794474B6BAA496E0C7698D63A72227740A31A2D8D22C26D16D74"
+  },
+  {
+    "source": "src/features/Administration.tsx",
+    "destination": "frontend/src/features/Administration.tsx",
+    "sha256": "C142E095F61D2C03FAE427054569014BA6E4F351BDDE88967B17FCECCE396593"
+  },
+  {
+    "source": "src/features/Dashboard.tsx",
+    "destination": "frontend/src/features/Dashboard.tsx",
+    "sha256": "6AAA75BAC9B4F32CD28B2FAD865C2E39F4664E316DBAD49C84ED1B6A2411CD30"
+  },
+  {
+    "source": "src/features/ManagementWorkspaces.tsx",
+    "destination": "frontend/src/features/ManagementWorkspaces.tsx",
+    "sha256": "BFBB6C698DA2C390E13E2AABCBBB34F97A69C01E072ACB7662A7F021E945E2E0"
+  },
+  {
+    "source": "src/features/modules.ts",
+    "destination": "frontend/src/features/modules.ts",
+    "sha256": "3F051615D763BEA3DDCAD16B2A3A3C2F3E61584E4188B7D2E5FAB324FAC20967"
+  },
+  {
+    "source": "src/features/RecordDetails.tsx",
+    "destination": "frontend/src/features/RecordDetails.tsx",
+    "sha256": "32072BAD36E93A627DBE9776DF0EBC4927F3F22660FAD553227271D08E6478B6"
+  },
+  {
+    "source": "src/features/RecordEditor.tsx",
+    "destination": "frontend/src/features/RecordEditor.tsx",
+    "sha256": "FF98B034719E3410A0773BD4F33F2460D065C8DE513D6304BC1E70686C687374"
+  },
+  {
+    "source": "src/features/RecordList.tsx",
+    "destination": "frontend/src/features/RecordList.tsx",
+    "sha256": "8913D2462621515AE074E872CE4F8B9ED3F87E063D688ABFE84B28811413607A"
+  },
+  {
+    "source": "src/hooks/useApi.ts",
+    "destination": "frontend/src/hooks/useApi.ts",
+    "sha256": "3ABAD1C681A63B1283317E4DBF673FF8B148BDF8A461CBE4BBF9EC5EE7134A30"
+  },
+  {
+    "source": "src/index.css",
+    "destination": "frontend/src/index.css",
+    "sha256": "934317E5F1EBDA8F137760E9A89AFF97529019359CDB6FCAA4DE0DFFC8C128FE"
+  },
+  {
+    "source": "src/main.tsx",
+    "destination": "frontend/src/main.tsx",
+    "sha256": "796EE282AEF190E9B8693806EFA97DBAAC1D7D87CC365F4DA51361A19DD50594"
+  },
+  {
+    "source": "src/pages/AuthPage.tsx",
+    "destination": "frontend/src/pages/AuthPage.tsx",
+    "sha256": "9775C87B4C136A4A1169358FE64936D0F5227544BE8EB6A2D47ED35698FE7AB9"
+  },
+  {
+    "source": "src/pages/HomePage.tsx",
+    "destination": "frontend/src/pages/HomePage.tsx",
+    "sha256": "A2F79CA39C4AC6A8190F487100096B9F7C44E0C7375510ABFE7FAE305E0CB94E"
+  },
+  {
+    "source": "src/pages/LoginPage.tsx",
+    "destination": "frontend/src/pages/LoginPage.tsx",
+    "sha256": "9F2B8F8E312EC1132C1FB2A8F47278837A4C83E3337B2CCF87148A18A0819F9D"
+  },
+  {
+    "source": "src/services/api.test.ts",
+    "destination": "frontend/src/services/api.test.ts",
+    "sha256": "4D0B3526CA20E61A2C086DF07C0299070A2C9CCF8025ABC557BD0D2CE92820B2"
+  },
+  {
+    "source": "src/services/api.ts",
+    "destination": "frontend/src/services/api.ts",
+    "sha256": "0AAAAE6E7459B0FFD3A10282AEB28BEBBFABE8BEBD121478F6DA4BBF28B90628"
+  },
+  {
+    "source": "src/styles/access.css",
+    "destination": "frontend/src/styles/access.css",
+    "sha256": "D0E3D6EB30B4560A8CCEB82CF189A27C07011D386F1DB1062524549D057DCB39"
+  },
+  {
+    "source": "src/styles/app.css",
+    "destination": "frontend/src/styles/app.css",
+    "sha256": "389A95912F49A67A1F0BBD759B46FFB76305B111E228FDE4A506A188BFC83E0A"
+  },
+  {
+    "source": "src/styles/auth.css",
+    "destination": "frontend/src/styles/auth.css",
+    "sha256": "AE7544A79476D4E6812FD890482470ED35C5890BC403D8B745588DB0E22AFD51"
+  },
+  {
+    "source": "src/styles/dashboard.css",
+    "destination": "frontend/src/styles/dashboard.css",
+    "sha256": "0B14C333ABF01C951D5FCB68F3F8AA877E0B2B3F3304688BEEF4D5D32AC14C47"
+  },
+  {
+    "source": "src/styles/management.css",
+    "destination": "frontend/src/styles/management.css",
+    "sha256": "F3DFAF83484097C5E5E51D62D06249FF349B47D0FA8A4A41BCF32A56FC119AD9"
+  },
+  {
+    "source": "src/styles/public.css",
+    "destination": "frontend/src/styles/public.css",
+    "sha256": "0CC4B28ECD8FEF323DA4ED69BDD63294A1699E0248C1E253DCAE5FA7DC9E08F4"
+  },
+  {
+    "source": "src/styles/workspace.css",
+    "destination": "frontend/src/styles/workspace.css",
+    "sha256": "A4F9E3FA3E582BA1A68A04083DBA077AEC08CDA41F30293AF099B9DE3984C108"
+  },
+  {
+    "source": "public/ercs-mark.svg",
+    "destination": "frontend/public/ercs-mark.svg",
+    "sha256": "B3EC5FDC7B212977F434E637319108C7983ECF205E3B6E4C5192DA4B8C74562F"
+  },
+  {
+    "source": "public/favicon.svg",
+    "destination": "frontend/public/favicon.svg",
+    "sha256": "61BC9A161DE58248288E6905425D7180F0624C2865007B97D763FDAC12043A66"
+  },
+  {
+    "source": "public/icons.svg",
+    "destination": "frontend/public/icons.svg",
+    "sha256": "7CA2D67C9C3AEBF50CDC8709EE8AACF8CDB8CC7EA6325EA94939CAEF5DA1C53D"
+  },
+  {
+    "source": "public/images/home/emergency-logistics-800.webp",
+    "destination": "frontend/public/images/home/emergency-logistics-800.webp",
+    "sha256": "DA1F8A6A9510F289EF59AF4BA4CE3F3332010798801387AFA47736FD52287FBA"
+  },
+  {
+    "source": "public/images/home/emergency-logistics.webp",
+    "destination": "frontend/public/images/home/emergency-logistics.webp",
+    "sha256": "DACFCA2E7EACEE065EC257506BC9094718E596293364A036EA3AA549360A59B6"
+  },
+  {
+    "source": "shared/domain.ts",
+    "destination": "frontend/shared/domain.ts",
+    "sha256": "745D7602FCD24C7606AFD51477ED92AE3CE0D73CA4588370B054347A3CF3B93D"
+  },
+  {
+    "source": "index.html",
+    "destination": "frontend/index.html",
+    "sha256": "BF8FBFA88CCFEDBECBAE079B211D269D62D308492FE8F6DA90577C176F937F79"
+  },
+  {
+    "source": ".oxlintrc.json",
+    "destination": "frontend/.oxlintrc.json",
+    "sha256": "3F46D4038FD69C0011DA897B887D747E3D66F0BBDA8B523A54891FBD473D67EF"
+  },
+  {
+    "source": "tsconfig.app.json",
+    "destination": "frontend/tsconfig.app.json",
+    "sha256": "359610BBE362B75B5A3646752E68B0845D8F0B66DFE315E5801FA2775384ECCD"
+  },
+  {
+    "source": "tsconfig.json",
+    "destination": "frontend/tsconfig.json",
+    "sha256": "AD28D132EE48D6E23917CF5827CACE785D0FC01A44CA68B0DDA51CC8C3FD3F52"
+  },
+  {
+    "source": "tsconfig.node.json",
+    "destination": "frontend/tsconfig.node.json",
+    "sha256": "A9E6C7F6FD3EC455A6FE1D4FBB83091E774B62FE116008AB6D8C5E1E88AF4629"
+  },
+  {
+    "source": "vite.config.ts",
+    "destination": "frontend/vite.config.ts",
+    "sha256": "AF13B83F90E8E8A3A88FC103A083D3BD31A1D438E36BDE0F8CB4485992E2EF6E"
+  },
+  {
+    "source": "scripts/optimize-hero.mjs",
+    "destination": "frontend/scripts/optimize-hero.mjs",
+    "sha256": "7F56B8DA1FBD61C2785F9EE5F616ADD289DF1B00C00516C5DFA56BCF5F034C6D"
+  },
+  {
+    "source": "scripts/free-port.ts",
+    "destination": "frontend/scripts/free-port.ts",
+    "sha256": "B1567A48B2C7BCFA6D123AEEC87F4865A80DC1555E6F9832F0B61EB2B3EAEE7F"
+  }
+]

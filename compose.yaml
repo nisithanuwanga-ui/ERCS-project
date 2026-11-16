@@ -1,0 +1,57 @@
+name: ercs
+services:
+  database:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ercs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+      POSTGRES_DB: ercs
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ercs -d ercs"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+  migrate:
+    image: ercs-backend:local
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgresql://ercs:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@database:5432/ercs
+    depends_on:
+      database:
+        condition: service_healthy
+    command: ["node", "dist/migrate.js"]
+    restart: "no"
+  backend:
+    image: ercs-backend:local
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+      DATABASE_URL: postgresql://ercs:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@database:5432/ercs
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    init: true
+    restart: unless-stopped
+  frontend:
+    image: ercs-frontend:local
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  postgres_data:
