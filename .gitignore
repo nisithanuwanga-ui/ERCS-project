@@ -34,3 +34,8 @@ tmp/
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example

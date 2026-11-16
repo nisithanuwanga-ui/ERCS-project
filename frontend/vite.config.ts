@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   server: {
+<<<<<<< HEAD:vite.config.ts
     host: "127.0.0.1",
     port: 5173,
     strictPort: true,
@@ -17,3 +18,13 @@ export default defineConfig({
     },
   },
 });
+=======
+    host: '0.0.0.0',
+    port: 4173,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
+  },
+})
+>>>>>>> origin/main:frontend/vite.config.ts
